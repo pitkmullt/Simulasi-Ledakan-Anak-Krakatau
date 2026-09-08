@@ -1,4 +1,4 @@
-<!-- ... existing code ... -->
+<!DOCTYPE html>
 <html lang="id" class="h-full" id="htmlTag">
 <head>
     <meta charset="UTF-8">
@@ -195,14 +195,14 @@
     <!-- Main App Container (No outer scrollbars) -->
     <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative min-h-0 w-full">
 
-        <!-- Left Sidebar: Controls & Parameter Form -->
-        <aside id="controlSidebar" class="hidden md:flex w-full md:w-80 lg:w-96 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex-col shrink-0 overflow-y-auto custom-scrollbar z-[500] absolute md:relative inset-0 max-h-full shadow-xl md:shadow-none pb-16 md:pb-4 transition-colors">
+        <!-- Left Sidebar: Controls & Parameter Form (Fixed Full Overlay on Mobile, Relative Sidebar on Desktop) -->
+        <aside id="controlSidebar" class="hidden md:flex fixed md:relative inset-0 md:inset-auto z-[2000] md:z-10 w-full md:w-80 lg:w-96 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex-col shrink-0 overflow-y-auto custom-scrollbar max-h-full shadow-2xl md:shadow-none pb-16 md:pb-4 transition-colors">
             <div class="p-4 space-y-4">
                 <div class="flex items-center justify-between md:hidden border-b border-slate-200 dark:border-slate-800 pb-2.5">
                     <span class="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider flex items-center gap-1.5">
                         <i data-lucide="sliders" class="w-4 h-4"></i> Pengaturan Parameter
                     </span>
-                    <button onclick="toggleMobileControls()" class="p-1 text-slate-500 dark:text-slate-400 rounded-lg bg-slate-100 dark:bg-slate-800">
+                    <button onclick="toggleMobileControls()" class="p-1.5 text-slate-500 dark:text-slate-400 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700">
                         <i data-lucide="x" class="w-5 h-5"></i>
                     </button>
                 </div>
@@ -377,7 +377,7 @@
         <main class="flex-1 flex flex-col overflow-hidden bg-slate-100 dark:bg-slate-950 min-h-0 w-full relative transition-colors">
             
             <!-- View Mode Navigation Bar -->
-            <div class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-3 flex items-center overflow-x-auto no-scrollbar shrink-0 gap-1 w-full transition-colors">
+            <div class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-3 flex items-center overflow-x-auto no-scrollbar shrink-0 gap-1 w-full transition-colors z-20">
                 <button id="tabBtnMap" onclick="switchTab('map')" class="py-2.5 px-3.5 text-xs font-bold border-b-2 border-orange-500 text-orange-600 dark:text-orange-400 flex items-center gap-1.5 whitespace-nowrap">
                     <i data-lucide="map" class="w-4 h-4"></i> Peta Selat Sunda
                 </button>
@@ -398,35 +398,35 @@
             <!-- Tab 1: Geographic Map View -->
             <div id="tabContentMap" class="flex-1 flex flex-col relative overflow-hidden min-h-0 w-full h-full">
                 
-                <!-- Stat Telemetry Ribbon Overlay -->
-                <div class="absolute top-2 left-2 right-2 z-[400] pointer-events-none">
-                    <!-- Desktop Stat Overlay Grid -->
-                    <div class="hidden md:grid grid-cols-4 lg:grid-cols-5 gap-2 pointer-events-none">
-                        <div class="bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl shadow-md pointer-events-auto">
+                <!-- Responsive Horizontally Scrollable Stat Ribbon Overlay -->
+                <div class="absolute top-2 left-2 right-2 z-[30] pointer-events-none">
+                    <!-- Desktop / Tablet Scrollable Stat Overlay Bar -->
+                    <div class="hidden md:flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 pointer-events-auto">
+                        <div class="bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl shadow-md shrink-0 min-w-[140px] flex-1">
                             <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold block">Jarak Proyektil Bom</span>
                             <span class="font-mono text-sm font-bold text-orange-600 dark:text-orange-400" id="stat_range">0 km</span>
                             <span class="text-[10px] text-slate-400 dark:text-slate-500 block" id="stat_ideal_range">Ideal: 0 km</span>
                         </div>
 
-                        <div class="bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl shadow-md pointer-events-auto">
+                        <div class="bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl shadow-md shrink-0 min-w-[140px] flex-1">
                             <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold block">Tinggi Kolom Erupsi</span>
                             <span class="font-mono text-sm font-bold text-amber-600 dark:text-amber-400" id="stat_max_alt">0 m</span>
                             <span class="text-[10px] text-purple-600 dark:text-purple-400 block" id="stat_plume_height">Kolom Abu: 0 m</span>
                         </div>
 
-                        <div class="bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl shadow-md pointer-events-auto">
+                        <div class="bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl shadow-md shrink-0 min-w-[140px] flex-1">
                             <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold block">Waktu Terbang Bom</span>
                             <span class="font-mono text-sm font-bold text-cyan-600 dark:text-cyan-400" id="stat_time">0 detik</span>
                             <span class="text-[10px] text-slate-400 dark:text-slate-500 block" id="stat_impact_speed">Jatuh: 0 m/s</span>
                         </div>
 
-                        <div class="bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl shadow-md pointer-events-auto">
+                        <div class="bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl shadow-md shrink-0 min-w-[150px] flex-1">
                             <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold block">Titik Jatuh Akhir</span>
                             <span class="font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400 block truncate" id="stat_coords">-6.10, 105.42</span>
                             <span class="text-[10px] text-slate-400 dark:text-slate-500 block" id="stat_bearing">Arah: 0°</span>
                         </div>
 
-                        <div class="bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl shadow-md pointer-events-auto hidden lg:block">
+                        <div class="bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl shadow-md shrink-0 min-w-[140px] flex-1">
                             <span class="text-[10px] text-purple-700 dark:text-purple-300 uppercase tracking-wider font-semibold block">Sebaran Abu Vulkanik</span>
                             <span class="font-mono text-xs font-bold text-purple-600 dark:text-purple-400 block" id="stat_ash_drift">Drift: 0 km</span>
                             <span class="text-[10px] text-slate-500 dark:text-slate-400 block" id="stat_ash_settle_time">Mengendap: 0 m</span>
@@ -458,7 +458,7 @@
                 <div id="map" class="w-full h-full z-0 flex-1"></div>
 
                 <!-- Map Legend -->
-                <div class="absolute bottom-3 right-3 z-[400] bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl text-xs space-y-1 shadow-md max-w-[200px] sm:max-w-xs pointer-events-auto">
+                <div class="absolute bottom-3 right-3 z-[30] bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl text-xs space-y-1 shadow-md max-w-[180px] sm:max-w-xs pointer-events-auto">
                     <div class="font-bold text-slate-800 dark:text-slate-300 text-[11px] mb-1 flex items-center justify-between">
                         <span>Legenda Peta</span>
                         <i data-lucide="info" class="w-3.5 h-3.5 text-slate-400"></i>
@@ -630,7 +630,7 @@
     </div>
 
     <!-- Theory Modal -->
-    <div id="theoryModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1000] hidden flex items-center justify-center p-4">
+    <div id="theoryModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[3000] hidden flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
             <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
                 <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
@@ -1271,6 +1271,7 @@
             const sidebar = document.getElementById('controlSidebar');
             if (sidebar) {
                 sidebar.classList.toggle('hidden');
+                sidebar.classList.toggle('flex');
             }
         }
 
