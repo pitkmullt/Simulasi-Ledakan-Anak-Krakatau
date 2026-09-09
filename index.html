@@ -14,12 +14,12 @@
                 extend: {
                     colors: {
                         krakatau: {
-                            50: '#fff7ed',
-                            100: '#ffedd5',
-                            500: '#f97316',
-                            600: '#ea580c',
-                            700: '#c2410c',
-                            900: '#7c2d12',
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
                         }
                     },
                     fontFamily: {
@@ -144,17 +144,17 @@
 <body class="h-full w-full flex flex-col overflow-hidden text-slate-800 bg-slate-100 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200">
 
     <!-- Top Header Navigation -->
-    <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-2 sm:px-4 py-2 flex items-center justify-between shrink-0 z-40 shadow-sm transition-colors gap-2 w-full max-w-full overflow-hidden">
+    <header class="bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 px-2 sm:px-4 py-2 flex items-center justify-between shrink-0 z-40 shadow-xs transition-colors gap-2 w-full max-w-full overflow-hidden">
         <div class="flex items-center space-x-2 shrink-0 min-w-0 max-w-[40%] xs:max-w-[48%] sm:max-w-none">
-            <div class="bg-gradient-to-tr from-orange-500 to-red-600 p-1.5 sm:p-2 rounded-xl shadow-md text-white shrink-0">
-                <i data-lucide="flame" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+            <div class="bg-blue-600 dark:bg-blue-600 p-1.5 sm:p-2 rounded-xl shadow-xs text-white shrink-0">
+                <i data-lucide="flame" class="w-4 h-4 sm:w-5 sm:h-5 text-sky-200"></i>
             </div>
             <div class="min-w-0">
                 <div class="flex items-center gap-1.5">
-                    <h1 class="font-bold text-xs sm:text-base leading-tight tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-orange-600 via-amber-600 to-red-600 dark:from-orange-400 dark:via-amber-200 dark:to-red-500 truncate">
+                    <h1 class="font-bold text-xs sm:text-base leading-tight tracking-tight text-slate-800 dark:text-slate-100 truncate">
                         Krakatau Physics
                     </h1>
-                    <span class="text-[9px] sm:text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-orange-100 text-orange-700 border border-orange-300 dark:bg-orange-500/10 dark:text-orange-400 dark:border-orange-500/30 shrink-0 hidden md:inline-block">Made by Haekal</span>
+                    <span class="text-[9px] sm:text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800 shrink-0 hidden md:inline-block">Made by Haekal</span>
                 </div>
                 <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 hidden md:block">
                     Simulasi Gerak Proyektil, Hambatan Udara & Pengaruh Angin di Selat Sunda
@@ -165,28 +165,28 @@
         <!-- Header Actions & Controls (Horizontally Scrollable on Mobile) -->
         <div class="flex items-center space-x-1.5 sm:space-x-2 overflow-x-auto no-scrollbar py-0.5 shrink-0 max-w-[60%] xs:max-w-[52%] sm:max-w-none flex-nowrap touch-pan-x">
             <!-- Light/Dark Mode Switcher Button -->
-            <button id="themeToggleBtn" onclick="toggleTheme()" class="p-1.5 text-amber-600 dark:text-amber-400 bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-1 text-xs font-semibold shrink-0" title="Beralih Tema (Light/Dark)">
-                <i data-lucide="sun" id="themeIcon" class="w-4 h-4"></i>
+            <button id="themeToggleBtn" onclick="toggleTheme()" class="p-1.5 text-slate-600 dark:text-sky-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-1 text-xs font-semibold shrink-0" title="Beralih Tema (Light/Dark)">
+                <i data-lucide="sun" id="themeIcon" class="w-4 h-4 text-blue-500"></i>
                 <span id="themeText" class="hidden lg:inline text-[11px]">Mode Terang</span>
             </button>
 
-            <button id="mobileControlToggle" onclick="toggleMobileControls()" class="md:hidden px-2 py-1.5 text-xs font-bold rounded-lg bg-orange-600 hover:bg-orange-500 text-white flex items-center gap-1 shadow transition shrink-0">
-                <i data-lucide="sliders" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
+            <button id="mobileControlToggle" onclick="toggleMobileControls()" class="md:hidden px-2 py-1.5 text-xs font-bold rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1 shadow-xs transition shrink-0">
+                <i data-lucide="sliders" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-200"></i>
                 <span id="mobileControlText" class="text-[11px]">Parameter</span>
             </button>
-            <button onclick="switchTab('ai')" class="px-2 sm:px-2.5 py-1.5 text-xs font-bold rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white flex items-center gap-1 shadow-md transition shrink-0 whitespace-nowrap">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-amber-300"></i>
+            <button onclick="switchTab('ai')" class="px-2 sm:px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-600 dark:hover:bg-blue-500 border border-blue-500 flex items-center gap-1 shadow-xs transition shrink-0 whitespace-nowrap">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-sky-200"></i>
                 <span class="text-[11px]">AI Volcanologist</span>
             </button>
-            <button id="toggleCompareBtn" onclick="toggleCompareMode()" class="px-2 sm:px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center gap-1 transition shrink-0 whitespace-nowrap">
-                <i data-lucide="columns-2" class="w-3.5 h-3.5 text-orange-500"></i>
+            <button id="toggleCompareBtn" onclick="toggleCompareMode()" class="px-2 sm:px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center gap-1 transition shrink-0 whitespace-nowrap">
+                <i data-lucide="columns-2" class="w-3.5 h-3.5 text-blue-500"></i>
                 <span id="compareBtnText" class="text-[11px]">Bandingkan: Off</span>
             </button>
-            <button onclick="openModal('theoryModal')" class="px-2 sm:px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center gap-1 transition shrink-0 whitespace-nowrap">
+            <button onclick="openModal('theoryModal')" class="px-2 sm:px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center gap-1 transition shrink-0 whitespace-nowrap">
                 <i data-lucide="book-open" class="w-3.5 h-3.5 text-blue-500"></i>
                 <span class="text-[11px]">Teori</span>
             </button>
-            <button onclick="resetToDefaults()" class="p-1.5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition shrink-0" title="Reset Parameter">
+            <button onclick="resetToDefaults()" class="p-1.5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition shrink-0" title="Reset Parameter">
                 <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
             </button>
         </div>
@@ -195,12 +195,12 @@
     <!-- Main App Container (No outer scrollbars) -->
     <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative min-h-0 w-full">
 
-        <!-- Left Sidebar: Controls & Parameter Form (Fixed Full Overlay on Mobile with High Z-Index, Relative Sidebar on Desktop) -->
-        <aside id="controlSidebar" class="hidden md:flex fixed md:relative inset-0 md:inset-auto z-[9999] md:z-10 w-full md:w-80 lg:w-96 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex-col shrink-0 overflow-y-auto custom-scrollbar max-h-full shadow-2xl md:shadow-none pb-16 md:pb-4 transition-colors">
+        <!-- Left Sidebar: Controls & Parameter Form -->
+        <aside id="controlSidebar" class="hidden md:flex fixed md:relative inset-0 md:inset-auto z-[9999] md:z-10 w-full md:w-80 lg:w-96 bg-slate-50/90 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex-col shrink-0 overflow-y-auto custom-scrollbar max-h-full shadow-xl md:shadow-none pb-16 md:pb-4 transition-colors">
             <div class="p-4 space-y-4">
                 <div class="flex items-center justify-between md:hidden border-b border-slate-200 dark:border-slate-800 pb-2.5">
-                    <span class="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider flex items-center gap-1.5">
-                        <i data-lucide="sliders" class="w-4 h-4"></i> Pengaturan Parameter
+                    <span class="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="sliders" class="w-4 h-4 text-blue-600"></i> Pengaturan Parameter
                     </span>
                     <button onclick="toggleMobileControls()" class="p-1.5 text-slate-500 dark:text-slate-400 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700">
                         <i data-lucide="x" class="w-5 h-5"></i>
@@ -208,59 +208,59 @@
                 </div>
 
                 <!-- Compare Mode Active Selector -->
-                <div id="compareSelectorContainer" class="hidden p-3 bg-orange-50/80 dark:bg-slate-800/80 border border-orange-300 dark:border-orange-500/30 rounded-xl space-y-2">
-                    <span class="text-xs font-semibold text-orange-800 dark:text-orange-300 block">Ubah Parameter Untuk:</span>
+                <div id="compareSelectorContainer" class="hidden p-3 bg-blue-50/60 dark:bg-slate-800/80 border border-blue-200 dark:border-blue-500/30 rounded-xl space-y-2">
+                    <span class="text-xs font-semibold text-slate-700 dark:text-blue-300 block">Ubah Parameter Untuk:</span>
                     <div class="flex gap-2">
-                        <button id="selectSimABtn" onclick="setActiveSimTarget('A')" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-orange-600 text-white border border-orange-400 shadow">Simulasi A (Biru)</button>
-                        <button id="selectSimBBtn" onclick="setActiveSimTarget('B')" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-600">Simulasi B (Kuning)</button>
+                        <button id="selectSimABtn" onclick="setActiveSimTarget('A')" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-blue-600 text-white border border-blue-500 shadow-xs">Simulasi A (Biru)</button>
+                        <button id="selectSimBBtn" onclick="setActiveSimTarget('B')" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-600">Simulasi B (Cyan)</button>
                     </div>
                 </div>
 
                 <!-- Material Type Selector -->
-                <div class="space-y-2 bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700/80">
-                    <label class="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider flex items-center justify-between">
-                        <span class="flex items-center gap-1.5"><i data-lucide="layers" class="w-4 h-4"></i> Jenis Material Erupsi</span>
+                <div class="space-y-2 bg-white dark:bg-slate-800/60 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 shadow-2xs">
+                    <label class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center justify-between">
+                        <span class="flex items-center gap-1.5"><i data-lucide="layers" class="w-4 h-4 text-blue-600 dark:text-blue-400"></i> Jenis Material Erupsi</span>
                     </label>
-                    <select id="param_materialType" class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-white focus:outline-none focus:border-orange-500 font-medium shadow-sm" onchange="updateParam('materialType', this.value)">
+                    <select id="param_materialType" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 font-medium shadow-2xs" onchange="updateParam('materialType', this.value)">
                         <option value="combined">🌪️ Combined (Bom + Abu Vulkanik)</option>
                         <option value="bomb">🪨 Bom Vulkanik (Ballistic Projectile)</option>
-                        <option value="fine_ash">☁️ Abu Vulkanik Halus (Fine Ash - 0.1 mm)</option>
+                        <option value="fine_ash">☁️ Abu Vulkanik Halus (Fine Ash - 0.001 mm)</option>
                         <option value="coarse_ash">🌋 Abu Kasar / Lapili (Coarse Ash - 2.0 mm)</option>
                     </select>
                     <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-normal">Abu vulkanik terbawa arus angin atmosfer & mengendap sesuai Kecepatan Jatuh Stokes.</p>
                 </div>
 
                 <!-- Parameter Section 1: Launch Kinematics -->
-                <div class="space-y-3 bg-slate-50/70 dark:bg-slate-800/40 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800">
-                    <h2 class="text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider flex items-center gap-1.5">
-                        <i data-lucide="rocket" class="w-4 h-4"></i> Parameter Peluncuran
+                <div class="space-y-3 bg-white dark:bg-slate-800/40 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+                    <h2 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="rocket" class="w-4 h-4 text-blue-600 dark:text-blue-400"></i> Parameter Peluncuran
                     </h2>
 
                     <!-- Initial Speed -->
                     <div>
                         <div class="flex justify-between text-xs mb-1">
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Kecepatan Awal (v₀)</span>
-                            <span class="font-mono text-orange-600 dark:text-orange-400 font-bold"><span id="val_v0">180</span> m/s</span>
+                            <span class="font-mono text-blue-700 dark:text-blue-300 font-bold"><span id="val_v0">180</span> m/s</span>
                         </div>
-                        <input type="range" id="param_v0" min="20" max="400" step="5" value="180" class="w-full accent-orange-500 cursor-pointer" oninput="updateParam('v0', this.value)">
+                        <input type="range" id="param_v0" min="20" max="400" step="5" value="180" class="w-full accent-blue-600 dark:accent-blue-400 cursor-pointer" oninput="updateParam('v0', this.value)">
                     </div>
 
                     <!-- Elevation Angle -->
                     <div>
                         <div class="flex justify-between text-xs mb-1">
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Sudut Elevasi (θ)</span>
-                            <span class="font-mono text-orange-600 dark:text-orange-400 font-bold"><span id="val_theta">45</span>°</span>
+                            <span class="font-mono text-blue-700 dark:text-blue-300 font-bold"><span id="val_theta">45</span>°</span>
                         </div>
-                        <input type="range" id="param_theta" min="5" max="85" step="1" value="45" class="w-full accent-orange-500 cursor-pointer" oninput="updateParam('theta', this.value)">
+                        <input type="range" id="param_theta" min="5" max="85" step="1" value="45" class="w-full accent-blue-600 dark:accent-blue-400 cursor-pointer" oninput="updateParam('theta', this.value)">
                     </div>
 
                     <!-- Azimuth / Launch Direction -->
                     <div>
                         <div class="flex justify-between text-xs mb-1">
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Arah Peluncuran (φ Azimuth)</span>
-                            <span class="font-mono text-orange-600 dark:text-orange-400 font-bold"><span id="val_phi">60</span>° (<span id="txt_phi_dir">NE</span>)</span>
+                            <span class="font-mono text-blue-700 dark:text-blue-300 font-bold"><span id="val_phi">60</span>° (<span id="txt_phi_dir">NE</span>)</span>
                         </div>
-                        <input type="range" id="param_phi" min="0" max="359" step="5" value="60" class="w-full accent-orange-500 cursor-pointer" oninput="updateParam('phi', this.value)">
+                        <input type="range" id="param_phi" min="0" max="359" step="5" value="60" class="w-full accent-blue-600 dark:accent-blue-400 cursor-pointer" oninput="updateParam('phi', this.value)">
                         <div class="flex justify-between text-[10px] text-slate-400 dark:text-slate-500 mt-1 font-mono">
                             <span>0°(U)</span><span>90°(T)</span><span>180°(S)</span><span>270°(B)</span>
                         </div>
@@ -268,27 +268,27 @@
                 </div>
 
                 <!-- Parameter Section 2: Particle Physical Properties -->
-                <div class="space-y-3 bg-slate-50/70 dark:bg-slate-800/40 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800">
-                    <h2 class="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
-                        <i data-lucide="box" class="w-4 h-4"></i> Sifat Fisik Material Proyektil
+                <div class="space-y-3 bg-white dark:bg-slate-800/40 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+                    <h2 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="box" class="w-4 h-4 text-blue-600 dark:text-blue-400"></i> Sifat Fisik Material Proyektil
                     </h2>
 
                     <!-- Particle Mass -->
                     <div>
                         <div class="flex justify-between text-xs mb-1">
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Massa Partikel Bom (m)</span>
-                            <span class="font-mono text-amber-600 dark:text-amber-400 font-bold"><span id="val_m">10.0</span> kg</span>
+                            <span class="font-mono text-blue-700 dark:text-blue-300 font-bold"><span id="val_m">10.0</span> kg</span>
                         </div>
-                        <input type="range" id="param_m" min="0.1" max="100" step="0.5" value="10.0" class="w-full accent-amber-500 cursor-pointer" oninput="updateParam('m', this.value)">
+                        <input type="range" id="param_m" min="0.1" max="100" step="0.5" value="10.0" class="w-full accent-blue-600 dark:accent-blue-400 cursor-pointer" oninput="updateParam('m', this.value)">
                     </div>
 
                     <!-- Drag Coefficient -->
                     <div>
                         <div class="flex justify-between text-xs mb-1">
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Koefisien Drag (C<sub>D</sub>)</span>
-                            <span class="font-mono text-amber-600 dark:text-amber-400 font-bold"><span id="val_Cd">0.50</span></span>
+                            <span class="font-mono text-blue-700 dark:text-blue-300 font-bold"><span id="val_Cd">0.50</span></span>
                         </div>
-                        <input type="range" id="param_Cd" min="0.0" max="1.2" step="0.01" value="0.50" class="w-full accent-amber-500 cursor-pointer" oninput="updateParam('Cd', this.value)">
+                        <input type="range" id="param_Cd" min="0.0" max="1.2" step="0.01" value="0.50" class="w-full accent-blue-600 dark:accent-blue-400 cursor-pointer" oninput="updateParam('Cd', this.value)">
                         <span class="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">Bola pejal ~0.47, Batuan vulkanik ~0.6-0.8</span>
                     </div>
 
@@ -296,25 +296,26 @@
                     <div>
                         <div class="flex justify-between text-xs mb-1">
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Luas Penampang (A)</span>
-                            <span class="font-mono text-amber-600 dark:text-amber-400 font-bold"><span id="val_A">0.020</span> m²</span>
+                            <span class="font-mono text-blue-700 dark:text-blue-300 font-bold"><span id="val_A">0.020</span> m²</span>
                         </div>
-                        <input type="range" id="param_A" min="0.002" max="0.5" step="0.002" value="0.020" class="w-full accent-amber-500 cursor-pointer" oninput="updateParam('A', this.value)">
+                        <input type="range" id="param_A" min="0.002" max="0.5" step="0.002" value="0.020" class="w-full accent-blue-600 dark:accent-blue-400 cursor-pointer" oninput="updateParam('A', this.value)">
                     </div>
 
                     <!-- Ash Grain Size Parameter -->
                     <div>
                         <div class="flex justify-between text-xs mb-1">
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Ukuran Bulir Abu (d<sub>ash</sub>)</span>
-                            <span class="font-mono text-purple-600 dark:text-purple-400 font-bold"><span id="val_ashSize">0.25</span> mm</span>
+                            <span class="font-mono text-indigo-600 dark:text-indigo-300 font-bold"><span id="val_ashSize">0.250</span> mm</span>
                         </div>
-                        <input type="range" id="param_ashSize" min="0.01" max="2.0" step="0.05" value="0.25" class="w-full accent-purple-500 cursor-pointer" oninput="updateParam('ashSize', this.value)">
+                        <input type="range" id="param_ashSize" min="0.001" max="2.0" step="0.001" value="0.250" class="w-full accent-indigo-600 dark:accent-indigo-400 cursor-pointer" oninput="updateParam('ashSize', this.value)">
+                        <span class="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">Toleransi presisi mikro: 0.001 mm – 2.000 mm</span>
                     </div>
                 </div>
 
                 <!-- Parameter Section 3: Atmosphere & Wind -->
-                <div class="space-y-3 bg-slate-50/70 dark:bg-slate-800/40 p-3.5 rounded-xl border border-slate-200 dark:border-slate-800">
-                    <h2 class="text-xs font-bold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider flex items-center gap-1.5">
-                        <i data-lucide="wind" class="w-4 h-4"></i> Lingkungan & Vektor Angin
+                <div class="space-y-3 bg-white dark:bg-slate-800/40 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-2xs">
+                    <h2 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="wind" class="w-4 h-4 text-blue-600 dark:text-blue-400"></i> Lingkungan & Vektor Angin
                     </h2>
 
                     <!-- Wind Speed -->
@@ -323,7 +324,7 @@
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Kecepatan Angin (v<sub>w</sub>)</span>
                             <span class="font-mono text-cyan-600 dark:text-cyan-400 font-bold"><span id="val_vw">12</span> m/s</span>
                         </div>
-                        <input type="range" id="param_vw" min="0" max="40" step="1" value="12" class="w-full accent-cyan-500 cursor-pointer" oninput="updateParam('vw', this.value)">
+                        <input type="range" id="param_vw" min="0" max="40" step="1" value="12" class="w-full accent-cyan-600 dark:accent-cyan-400 cursor-pointer" oninput="updateParam('vw', this.value)">
                     </div>
 
                     <!-- Wind Direction -->
@@ -332,7 +333,7 @@
                             <span class="text-slate-700 dark:text-slate-300 font-medium">Arah Hembusan Angin (φ<sub>w</sub>)</span>
                             <span class="font-mono text-cyan-600 dark:text-cyan-400 font-bold"><span id="val_phiw">240</span>° (<span id="txt_phiw_dir">SW</span>)</span>
                         </div>
-                        <input type="range" id="param_phiw" min="0" max="359" step="5" value="240" class="w-full accent-cyan-500 cursor-pointer" oninput="updateParam('phiw', this.value)">
+                        <input type="range" id="param_phiw" min="0" max="359" step="5" value="240" class="w-full accent-cyan-600 dark:accent-cyan-400 cursor-pointer" oninput="updateParam('phiw', this.value)">
                         <span class="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">Arah ke mana angin bertiup menuju</span>
                     </div>
 
@@ -344,41 +345,41 @@
                         <div class="mt-2 space-y-2 pl-2 border-l border-slate-300 dark:border-slate-700">
                             <div>
                                 <label class="block text-[10px]">Massa Jenis Udara (ρ kg/m³)</label>
-                                <input type="number" id="param_rho" step="0.01" value="1.225" class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded px-2.5 py-1 text-xs text-slate-800 dark:text-slate-200 mt-0.5" onchange="updateParam('rho', this.value)">
+                                <input type="number" id="param_rho" step="0.01" value="1.225" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded px-2.5 py-1 text-xs text-slate-800 dark:text-slate-200 mt-0.5" onchange="updateParam('rho', this.value)">
                             </div>
                             <div>
                                 <label class="block text-[10px]">Percepatan Gravitasi (g m/s²)</label>
-                                <input type="number" id="param_g" step="0.01" value="9.81" class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded px-2.5 py-1 text-xs text-slate-800 dark:text-slate-200 mt-0.5" onchange="updateParam('g', this.value)">
+                                <input type="number" id="param_g" step="0.01" value="9.81" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded px-2.5 py-1 text-xs text-slate-800 dark:text-slate-200 mt-0.5" onchange="updateParam('g', this.value)">
                             </div>
                             <div>
                                 <label class="block text-[10px]">Ketinggian Kawah Awal (z₀ m)</label>
-                                <input type="number" id="param_z0" step="10" value="155" class="w-full bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded px-2.5 py-1 text-xs text-slate-800 dark:text-slate-200 mt-0.5" onchange="updateParam('z0', this.value)">
+                                <input type="number" id="param_z0" step="10" value="155" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded px-2.5 py-1 text-xs text-slate-800 dark:text-slate-200 mt-0.5" onchange="updateParam('z0', this.value)">
                             </div>
                         </div>
                     </details>
                 </div>
 
                 <!-- Simulation Trigger Action -->
-                <button onclick="runSimulation(); if(window.innerWidth < 768) toggleMobileControls();" class="w-full py-3 bg-gradient-to-r from-orange-600 via-amber-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md transition duration-150 flex items-center justify-center gap-2">
-                    <i data-lucide="play" class="w-4 h-4 fill-current"></i> SIMULASIKAN LINTASAN & ABU
+                <button onclick="runSimulation(); if(window.innerWidth < 768) toggleMobileControls();" class="w-full py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-bold text-xs sm:text-sm rounded-xl shadow-xs transition duration-150 flex items-center justify-center gap-2">
+                    <i data-lucide="play" class="w-4 h-4 fill-current text-white"></i> SIMULASIKAN LINTASAN & ABU
                 </button>
 
                 <!-- Developer Attribution Badge -->
                 <div class="text-center pt-2 pb-1 border-t border-slate-200 dark:border-slate-800/80">
                     <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-center gap-1">
-                        <i data-lucide="code" class="w-3.5 h-3.5 text-orange-500"></i> Made by <strong class="text-orange-600 dark:text-orange-300 font-semibold">Haekal</strong>
+                        <i data-lucide="code" class="w-3.5 h-3.5 text-slate-600 dark:text-slate-400"></i> Made by <strong class="text-slate-800 dark:text-slate-200 font-semibold">Haekal</strong>
                     </span>
                 </div>
 
             </div>
         </aside>
 
-        <!-- Right Main Viewport Container (Isolated Z-Index Stacking Context) -->
+        <!-- Right Main Viewport Container -->
         <main class="flex-1 flex flex-col overflow-hidden bg-slate-100 dark:bg-slate-950 min-h-0 w-full relative transition-colors z-0">
             
             <!-- View Mode Navigation Bar -->
-            <div class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-3 flex items-center overflow-x-auto no-scrollbar shrink-0 gap-1 w-full transition-colors z-20">
-                <button id="tabBtnMap" onclick="switchTab('map')" class="py-2.5 px-3.5 text-xs font-bold border-b-2 border-orange-500 text-orange-600 dark:text-orange-400 flex items-center gap-1.5 whitespace-nowrap">
+            <div class="bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 px-3 flex items-center overflow-x-auto no-scrollbar shrink-0 gap-1 w-full transition-colors z-20">
+                <button id="tabBtnMap" onclick="switchTab('map')" class="py-2.5 px-3.5 text-xs font-bold border-b-2 border-blue-600 text-blue-600 dark:text-blue-400 flex items-center gap-1.5 whitespace-nowrap">
                     <i data-lucide="map" class="w-4 h-4"></i> Peta Selat Sunda
                 </button>
                 <button id="tabBtnCharts" onclick="switchTab('charts')" class="py-2.5 px-3.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 flex items-center gap-1.5 whitespace-nowrap">
@@ -387,8 +388,8 @@
                 <button id="tabBtn3D" onclick="switchTab('3d')" class="py-2.5 px-3.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 flex items-center gap-1.5 whitespace-nowrap">
                     <i data-lucide="box" class="w-4 h-4"></i> Visualisasi 3D
                 </button>
-                <button id="tabBtnAI" onclick="switchTab('ai')" class="py-2.5 px-3.5 text-xs font-semibold border-b-2 border-transparent text-purple-600 dark:text-purple-400 flex items-center gap-1.5 whitespace-nowrap">
-                    <i data-lucide="sparkles" class="w-4 h-4 text-amber-500"></i> AI Insights
+                <button id="tabBtnAI" onclick="switchTab('ai')" class="py-2.5 px-3.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 dark:text-slate-400 flex items-center gap-1.5 whitespace-nowrap">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-blue-500"></i> AI Insights
                 </button>
                 <button id="tabBtnScenarios" onclick="switchTab('scenarios')" class="py-2.5 px-3.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 flex items-center gap-1.5 whitespace-nowrap">
                     <i data-lucide="flask-conical" class="w-4 h-4"></i> Eksperimen
@@ -550,30 +551,114 @@
             <!-- Tab 4: AI Insights -->
             <div id="tabContentAI" class="flex-1 p-4 sm:p-6 overflow-y-auto custom-scrollbar hidden space-y-6">
                 <div class="max-w-4xl mx-auto space-y-6">
-                    <div class="bg-gradient-to-r from-purple-100 via-white to-indigo-100 dark:from-purple-900/40 dark:via-slate-900 dark:to-indigo-900/40 border border-purple-200 dark:border-purple-500/30 rounded-2xl p-5 shadow-md flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <!-- AI Header & Control Actions -->
+                    <div class="bg-gradient-to-r from-purple-100 via-white to-indigo-100 dark:from-purple-900/40 dark:via-slate-900 dark:to-indigo-900/40 border border-purple-200 dark:border-purple-500/30 rounded-2xl p-5 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                         <div class="space-y-1">
                             <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                                 <i data-lucide="sparkles" class="w-5 h-5 text-amber-500"></i>
                                 Analisis Volkanologi & Fisika AI Gemini
                             </h2>
                             <p class="text-xs text-purple-900 dark:text-purple-200/80">
-                                Evaluasi bahaya letusan, dampak aerodinamis drag, dan estimasi risiko kawasan Selat Sunda.
+                                Evaluasi bahaya letusan, dampak aerodinamis drag, audio briefing (TTS), dan visualisasi gambar erupsi AI.
                             </p>
                         </div>
-                        <button onclick="generateAIAnalysis()" id="btnGenerateAI" class="px-4 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow transition flex items-center justify-center gap-2 shrink-0">
-                            <i data-lucide="bot" class="w-4 h-4"></i> Buat Laporan AI
-                        </button>
+                        <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                            <button onclick="generateAIAnalysis()" id="btnGenerateAI" class="flex-1 md:flex-none px-3.5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow transition flex items-center justify-center gap-1.5">
+                                <i data-lucide="file-text" class="w-4 h-4"></i> Buat Laporan AI
+                            </button>
+                            <button onclick="generateAIAudioBriefing()" id="btnGenerateTTS" class="flex-1 md:flex-none px-3.5 py-2.5 bg-slate-800 hover:bg-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 text-white text-xs font-bold rounded-xl shadow transition flex items-center justify-center gap-1.5">
+                                <i data-lucide="volume-2" class="w-4 h-4 text-cyan-400"></i> Voice Briefing
+                            </button>
+                            <button onclick="generateAIEruptionImage()" id="btnGenerateImage" class="flex-1 md:flex-none px-3.5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white text-xs font-bold rounded-xl shadow transition flex items-center justify-center gap-1.5">
+                                <i data-lucide="image" class="w-4 h-4 text-yellow-200"></i> Visualisasi Gambar
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-md relative min-h-[200px]">
+                    <!-- AI Generated Image Display Container -->
+                    <div id="aiImageContainer" class="hidden bg-white dark:bg-slate-900 border border-amber-300 dark:border-amber-500/40 rounded-2xl p-4 shadow-md overflow-hidden relative">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-bold text-amber-700 dark:text-amber-400 flex items-center gap-1.5">
+                                <i data-lucide="camera" class="w-4 h-4"></i> Visualisasi Rekonstruksi Erupsi AI (Gemini 3.1 Flash Image)
+                            </span>
+                            <button onclick="document.getElementById('aiImageContainer').classList.add('hidden')" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200">
+                                <i data-lucide="x" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        <div id="aiImageLoading" class="h-64 flex flex-col items-center justify-center space-y-2 bg-slate-100 dark:bg-slate-950 rounded-xl">
+                            <i data-lucide="loader-2" class="w-8 h-8 text-amber-500 animate-spin"></i>
+                            <span class="text-xs text-amber-800 dark:text-amber-300 font-semibold">Menggenerasi render lanskap erupsi Selat Sunda...</span>
+                        </div>
+                        <img id="aiEruptionImg" src="" alt="Visualisasi Erupsi AI" class="hidden w-full h-auto max-h-[420px] object-cover rounded-xl border border-slate-200 dark:border-slate-800 shadow-lg">
+                    </div>
+
+                    <!-- Audio Player Bar -->
+                    <div id="aiAudioPlayerContainer" class="hidden bg-slate-900 text-white p-3.5 rounded-2xl shadow-lg border border-cyan-500/30 flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-cyan-500/20 text-cyan-400 rounded-xl">
+                                <i data-lucide="radio" class="w-5 h-5 animate-pulse"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-cyan-300">Audio Briefing Volkanologi TTS</h4>
+                                <p class="text-[10px] text-slate-400">Narasi Suara AI Gemini 2.5 Flash Speech</p>
+                            </div>
+                        </div>
+                        <audio id="aiAudioElement" controls class="w-full sm:w-64 h-8 accent-cyan-500"></audio>
+                    </div>
+
+                    <!-- AI Written Analysis Report -->
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-md relative min-h-[220px]">
                         <div id="aiAnalysisLoading" class="hidden absolute inset-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center space-y-3 z-10">
                             <i data-lucide="loader-2" class="w-8 h-8 text-purple-600 dark:text-purple-400 animate-spin"></i>
                             <span class="text-xs font-semibold text-purple-800 dark:text-purple-300">Menganalisis lintasan fisika & dampak geografis...</span>
                         </div>
                         <div id="aiAnalysisContent" class="prose prose-slate dark:prose-invert max-w-none text-xs leading-relaxed text-slate-700 dark:text-slate-300 space-y-3">
-                            <p class="text-slate-500 dark:text-slate-400 italic">Klik tombol <strong>"Buat Laporan AI"</strong> di atas untuk memproses data parameter simulasi saat ini.</p>
+                            <p class="text-slate-500 dark:text-slate-400 italic">Klik tombol <strong>"Buat Laporan AI"</strong> di atas untuk memproses data parameter simulasi saat ini menggunakan Gemini AI.</p>
                         </div>
                     </div>
+
+                    <!-- Interactive Q&A Chat Section -->
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-md space-y-4">
+                        <div class="border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center justify-between">
+                            <h3 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                                <i data-lucide="messages-square" class="w-4 h-4 text-indigo-500"></i>
+                                Tanya Jawab Volkanologi & Fisika dengan Dr. Krakatau AI
+                            </h3>
+                            <span class="text-[10px] bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full font-semibold">Gemini 3 Flash</span>
+                        </div>
+
+                        <!-- Chat Message Log -->
+                        <div id="chatMessageLog" class="h-64 overflow-y-auto custom-scrollbar p-3 bg-slate-50 dark:bg-slate-950 rounded-xl space-y-3 text-xs border border-slate-200 dark:border-slate-800">
+                            <div class="flex gap-2.5 items-start">
+                                <div class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0">AI</div>
+                                <div class="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 shadow-sm max-w-[85%]">
+                                    Halo! Saya Dr. Krakatau AI. Anda bisa bertanya tentang persamaan mekanika, hukum drag aerodinamis, sebaran abu Stokes, maupun sejarah erupsi Krakatau!
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prompt Suggestion Chips -->
+                        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
+                            <button onclick="sendQuickChatPrompt('Mengapa gaya hambat udara (drag) mengurangi jangkauan proyektil secara signifikan?')" class="text-[10px] px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 shrink-0 whitespace-nowrap transition">
+                                💡 Mengapa Drag Mengurangi Jarak?
+                            </button>
+                            <button onclick="sendQuickChatPrompt('Bagaimana Kecepatan Jatuh Stokes memengaruhi jarak drift abu vulkanik?')" class="text-[10px] px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 shrink-0 whitespace-nowrap transition">
+                                ☁️ Efek Stokes & Drift Abu
+                            </button>
+                            <button onclick="sendQuickChatPrompt('Sebutkan sejarah singkat letusan dahsyat Krakatau tahun 1883 dan dampaknya di Selat Sunda.')" class="text-[10px] px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 shrink-0 whitespace-nowrap transition">
+                                🌋 Sejarah Erupsi Krakatau 1883
+                            </button>
+                        </div>
+
+                        <!-- Chat Input Box -->
+                        <form onsubmit="handleChatSubmit(event)" class="flex gap-2">
+                            <input type="text" id="chatInputText" placeholder="Ketik pertanyaan fisika atau volkanologi..." class="flex-1 bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-800 dark:text-white focus:outline-none focus:border-indigo-500 font-medium">
+                            <button type="submit" id="btnSendChat" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition flex items-center gap-1 shrink-0">
+                                <i data-lucide="send" class="w-3.5 h-3.5"></i> Kirim
+                            </button>
+                        </form>
+                    </div>
+
                 </div>
             </div>
 
@@ -907,16 +992,21 @@
             const mapContainer = document.getElementById('map');
             if (!mapContainer) return;
 
+            if (map) {
+                map.remove();
+            }
+
             map = L.map('map', {
                 center: [KRAKATAU_LAT, KRAKATAU_LON],
                 zoom: 11,
                 zoomControl: true
             });
 
-            // Standard OpenStreetMap tiles - Crisp in Light Mode
-            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; OpenStreetMap contributors',
-                maxZoom: 18
+            // Fast, reliable CartoDB Voyager tiles for crisp light/dark presentation
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+                subdomains: 'abcd',
+                maxZoom: 19
             }).addTo(map);
 
             // Krakatau Crater Pulsing Marker - Nested element to prevent transform override
@@ -930,6 +1020,10 @@
             mapLayers.krakatauMarker = L.marker([KRAKATAU_LAT, KRAKATAU_LON], { icon: craterIcon })
                 .addTo(map)
                 .bindPopup('<b>Anak Krakatau</b><br>Kawah Utama (Ketinggian 155m)');
+
+            setTimeout(() => {
+                if (map) map.invalidateSize();
+            }, 250);
         }
 
         // Render Polyline Trajectories on Leaflet Map
@@ -951,46 +1045,55 @@
             // Simulation A Render
             if (simResults.A) {
                 const resA = simResults.A;
-                const coordsA = resA.points.map(pt => [
-                    KRAKATAU_LAT + pt.y * latPerM,
-                    KRAKATAU_LON + pt.x * lonPerM
-                ]);
+                const matType = simParams.A.materialType || 'combined';
 
-                mapLayers.trajA = L.polyline(coordsA, { color: '#ea580c', weight: 4, opacity: 0.95 }).addTo(map);
+                const showBomb = (matType === 'combined' || matType === 'bomb');
+                const showAsh = (matType === 'combined' || matType === 'fine_ash' || matType === 'coarse_ash');
 
-                // Ideal Vacuum Line
-                const phiRad = parseFloat(simParams.A.phi) * Math.PI / 180;
-                const idealCoords = [
-                    [KRAKATAU_LAT, KRAKATAU_LON],
-                    [
-                        KRAKATAU_LAT + (resA.ideal.range * Math.cos(phiRad)) * latPerM,
-                        KRAKATAU_LON + (resA.ideal.range * Math.sin(phiRad)) * lonPerM
-                    ]
-                ];
-                mapLayers.idealA = L.polyline(idealCoords, { color: '#06b6d4', weight: 2, dashArray: '6, 6', opacity: 0.8 }).addTo(map);
+                if (showBomb) {
+                    const coordsA = resA.points.map(pt => [
+                        KRAKATAU_LAT + pt.y * latPerM,
+                        KRAKATAU_LON + pt.x * lonPerM
+                    ]);
 
-                // Impact Marker
-                mapLayers.impactMarkerA = L.circleMarker([resA.endLat, resA.endLon], {
-                    radius: 7,
-                    fillColor: '#10b981',
-                    color: '#ffffff',
-                    weight: 2,
-                    fillOpacity: 1
-                }).addTo(map).bindPopup(`<b>Titik Dampak Bom (A)</b><br>Jarak: ${(resA.horizDist/1000).toFixed(2)} km`);
+                    mapLayers.trajA = L.polyline(coordsA, { color: '#ea580c', weight: 4, opacity: 0.95 }).addTo(map);
 
-                // Ash Footprint Ellipse
-                const ash = resA.ash;
-                const ashCenterLat = (KRAKATAU_LAT + ash.ashLat) / 2;
-                const ashCenterLon = (KRAKATAU_LON + ash.ashLon) / 2;
+                    // Ideal Vacuum Line
+                    const phiRad = parseFloat(simParams.A.phi) * Math.PI / 180;
+                    const idealCoords = [
+                        [KRAKATAU_LAT, KRAKATAU_LON],
+                        [
+                            KRAKATAU_LAT + (resA.ideal.range * Math.cos(phiRad)) * latPerM,
+                            KRAKATAU_LON + (resA.ideal.range * Math.sin(phiRad)) * lonPerM
+                        ]
+                    ];
+                    mapLayers.idealA = L.polyline(idealCoords, { color: '#06b6d4', weight: 2, dashArray: '6, 6', opacity: 0.8 }).addTo(map);
 
-                mapLayers.ashPolyA = L.circle([ashCenterLat, ashCenterLon], {
-                    radius: Math.max(ash.driftDist / 2, 500),
-                    color: '#9333ea',
-                    fillColor: '#a855f7',
-                    fillOpacity: 0.3,
-                    weight: 2,
-                    dashArray: '4, 4'
-                }).addTo(map).bindPopup(`<b>Zona Sebaran Abu Vulkanik (Isopach)</b><br>Jarak Drift: ${(ash.driftDist/1000).toFixed(1)} km`);
+                    // Impact Marker
+                    mapLayers.impactMarkerA = L.circleMarker([resA.endLat, resA.endLon], {
+                        radius: 7,
+                        fillColor: '#10b981',
+                        color: '#ffffff',
+                        weight: 2,
+                        fillOpacity: 1
+                    }).addTo(map).bindPopup(`<b>Titik Dampak Bom (A)</b><br>Jarak: ${(resA.horizDist/1000).toFixed(2)} km`);
+                }
+
+                if (showAsh) {
+                    // Ash Footprint Ellipse
+                    const ash = resA.ash;
+                    const ashCenterLat = (KRAKATAU_LAT + ash.ashLat) / 2;
+                    const ashCenterLon = (KRAKATAU_LON + ash.ashLon) / 2;
+
+                    mapLayers.ashPolyA = L.circle([ashCenterLat, ashCenterLon], {
+                        radius: Math.max(ash.driftDist / 2, 500),
+                        color: '#9333ea',
+                        fillColor: '#a855f7',
+                        fillOpacity: 0.35,
+                        weight: 2,
+                        dashArray: '4, 4'
+                    }).addTo(map).bindPopup(`<b>Zona Sebaran Abu Vulkanik (Isopach)</b><br>Ukuran Bulir: ${simParams.A.ashSize} mm<br>Jarak Drift: ${(ash.driftDist/1000).toFixed(1)} km`);
+                }
             }
 
             // Simulation B Render
@@ -1209,6 +1312,10 @@
             renderMapTrajectories();
             updateCharts();
             render3DCanvas();
+
+            if (map) {
+                setTimeout(() => map.invalidateSize(), 100);
+            }
         }
 
         // Tab Navigation
@@ -1228,12 +1335,12 @@
                 if (key === tabKey) {
                     contentEl?.classList.remove('hidden');
                     if (key === '3d') contentEl?.classList.add('flex');
-                    btnEl?.classList.add('border-orange-500', 'text-orange-600', 'dark:text-orange-400');
+                    btnEl?.classList.add('border-blue-600', 'text-blue-600', 'dark:text-blue-400');
                     btnEl?.classList.remove('border-transparent', 'text-slate-600', 'dark:text-slate-400');
                 } else {
                     contentEl?.classList.add('hidden');
                     if (key === '3d') contentEl?.classList.remove('flex');
-                    btnEl?.classList.remove('border-orange-500', 'text-orange-600', 'dark:text-orange-400');
+                    btnEl?.classList.remove('border-blue-600', 'text-blue-600', 'dark:text-blue-400');
                     btnEl?.classList.add('border-transparent', 'text-slate-600', 'dark:text-slate-400');
                 }
             });
@@ -1249,9 +1356,44 @@
             simParams[activeSimTarget][key] = val;
 
             const valEl = document.getElementById('val_' + key);
-            if (valEl) valEl.innerText = val;
+            if (valEl) {
+                if (key === 'ashSize') {
+                    valEl.innerText = parseFloat(val).toFixed(3);
+                } else {
+                    valEl.innerText = val;
+                }
+            }
 
-            if (key === 'phi') {
+            if (key === 'materialType') {
+                // Apply physical parameter presets based on selected material
+                const target = activeSimTarget;
+                if (val === 'bomb') {
+                    simParams[target].m = 25.0;
+                    simParams[target].Cd = 0.65;
+                    simParams[target].A = 0.050;
+                } else if (val === 'fine_ash') {
+                    simParams[target].m = 0.1;
+                    simParams[target].Cd = 0.85;
+                    simParams[target].A = 0.005;
+                    simParams[target].ashSize = 0.001;
+                } else if (val === 'coarse_ash') {
+                    simParams[target].m = 0.5;
+                    simParams[target].Cd = 0.75;
+                    simParams[target].A = 0.010;
+                    simParams[target].ashSize = 2.000;
+                } else if (val === 'combined') {
+                    simParams[target].m = 10.0;
+                    simParams[target].Cd = 0.50;
+                    simParams[target].A = 0.020;
+                    simParams[target].ashSize = 0.250;
+                }
+
+                // Synchronize all UI slider inputs with preset values
+                syncSliderUI('m', simParams[target].m);
+                syncSliderUI('Cd', simParams[target].Cd);
+                syncSliderUI('A', simParams[target].A);
+                syncSliderUI('ashSize', simParams[target].ashSize);
+            } else if (key === 'phi') {
                 const dirEl = document.getElementById('txt_phi_dir');
                 if (dirEl) dirEl.innerText = getCompassBearing(parseFloat(val));
             } else if (key === 'phiw') {
@@ -1262,16 +1404,16 @@
             runSimulation();
         }
 
-        function getCompassBearing(deg) {
-            const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-            return directions[Math.round(deg / 45) % 8];
-        }
-
-        function toggleMobileControls() {
-            const sidebar = document.getElementById('controlSidebar');
-            if (sidebar) {
-                sidebar.classList.toggle('hidden');
-                sidebar.classList.toggle('flex');
+        function syncSliderUI(key, value) {
+            const inputEl = document.getElementById('param_' + key);
+            const valEl = document.getElementById('val_' + key);
+            if (inputEl) inputEl.value = value;
+            if (valEl) {
+                if (key === 'ashSize') {
+                    valEl.innerText = parseFloat(value).toFixed(3);
+                } else {
+                    valEl.innerText = value;
+                }
             }
         }
 
@@ -1299,12 +1441,12 @@
             const btnB = document.getElementById('selectSimBBtn');
 
             if (target === 'A') {
-                btnA?.classList.replace('bg-slate-200', 'bg-orange-600');
-                btnA?.classList.replace('dark:bg-slate-700', 'bg-orange-600');
-                btnB?.classList.replace('bg-amber-600', 'bg-slate-200');
+                btnA?.classList.replace('bg-slate-200', 'bg-blue-600');
+                btnA?.classList.replace('dark:bg-slate-700', 'bg-blue-600');
+                btnB?.classList.replace('bg-cyan-600', 'bg-slate-200');
             } else {
-                btnB?.classList.replace('bg-slate-200', 'bg-amber-600');
-                btnA?.classList.replace('bg-orange-600', 'bg-slate-200');
+                btnB?.classList.replace('bg-slate-200', 'bg-cyan-600');
+                btnA?.classList.replace('bg-blue-600', 'bg-slate-200');
             }
         }
 
@@ -1329,6 +1471,88 @@
         function openModal(id) { document.getElementById(id)?.classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
 
+        // Compass direction helper function
+        function getCompassBearing(deg) {
+            const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+            const normalized = ((deg % 360) + 360) % 360;
+            const index = Math.round(normalized / 45) % 8;
+            return directions[index];
+        }
+
+        // Mobile drawer control toggle function
+        function toggleMobileControls() {
+            const sidebar = document.getElementById('controlSidebar');
+            if (!sidebar) return;
+            sidebar.classList.toggle('hidden');
+            isMobileControlsOpen = !sidebar.classList.contains('hidden');
+        }
+
+        // Gemini API Exponential Backoff Fetch Helper
+        async function fetchGeminiWithBackoff(url, options, maxRetries = 3) {
+            let delay = 1000;
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.ok) return response;
+                    if (response.status === 429 || response.status >= 500) {
+                        await new Promise(r => setTimeout(r, delay));
+                        delay *= 2;
+                        continue;
+                    }
+                    return response;
+                } catch (err) {
+                    if (i === maxRetries - 1) throw err;
+                    await new Promise(r => setTimeout(r, delay));
+                    delay *= 2;
+                }
+            }
+            throw new Error('Gagal menghubungi API Gemini');
+        }
+
+        // Helper to convert PCM16 audio bytes into a valid WAV file Blob for browser playback
+        function base64ToArrayBuffer(base64) {
+            const binaryString = window.atob(base64);
+            const len = binaryString.length;
+            const bytes = new Uint8Array(len);
+            for (let i = 0; i < len; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+            }
+            return bytes.buffer;
+        }
+
+        function pcmToWav(pcm16, sampleRate) {
+            const buffer = new ArrayBuffer(44 + pcm16.length * 2);
+            const view = new DataView(buffer);
+
+            function writeString(view, offset, string) {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            }
+
+            writeString(view, 0, 'RIFF');
+            view.setUint32(4, 36 + pcm16.length * 2, true);
+            writeString(view, 8, 'WAVE');
+            writeString(view, 12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true); // PCM format
+            view.setUint16(22, 1, true); // Mono channel
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true);
+            view.setUint16(32, 2, true);
+            view.setUint16(34, 16, true);
+            writeString(view, 36, 'data');
+            view.setUint32(40, pcm16.length * 2, true);
+
+            let offset = 44;
+            for (let i = 0; i < pcm16.length; i++, offset += 2) {
+                view.setInt16(offset, pcm16[i], true);
+            }
+
+            return new Blob([view], { type: 'audio/wav' });
+        }
+
+        // 1. Live Gemini AI Analysis Report (gemini-3-flash-preview)
         async function generateAIAnalysis() {
             const loading = document.getElementById('aiAnalysisLoading');
             const content = document.getElementById('aiAnalysisContent');
@@ -1337,21 +1561,247 @@
             const p = simParams.A;
             const r = simResults.A;
 
-            setTimeout(() => {
-                if (content && window.marked) {
-                    content.innerHTML = marked.parse(`### 🌋 Laporan Evaluasi Volkanologi AI Gemini
-**Objek:** Erupsi Anak Krakatau, Selat Sunda
+            const systemPrompt = "Anda adalah Ahli Volkanologi dan Fisika Terkemuka. Buat laporan analisis ilmiah yang mendalam, terstruktur, dan edukatif dalam bahasa Indonesia berdasarkan data parameter simulasi letusan Anak Krakatau yang diberikan.";
+            const userPrompt = `Data Parameter Erupsi Anak Krakatau saat ini:
+- Kecepatan Awal (v0): ${p.v0} m/s
+- Sudut Elevasi (theta): ${p.theta}°
+- Azimuth Peluncuran (phi): ${p.phi}° (${getCompassBearing(p.phi)})
+- Massa Bom Vulkanik: ${p.m} kg, Luas Penampang: ${p.A} m², Koefisien Drag: ${p.Cd}
+- Kecepatan Angin: ${p.vw} m/s, Arah Angin: ${p.phiw}° (${getCompassBearing(p.phiw)})
+- Ukuran Bulir Abu Vulkanik: ${p.ashSize} mm
 
-#### 1. Kinematika & Gaya Aerodinamis Drag
-- **Hambatan Udara ($F_D$):** Gaya hambat mengurangi jangkauan proyektil dari **${(r.ideal.range/1000).toFixed(2)} km (Ideal)** menjadi **${(r.horizDist/1000).toFixed(2)} km**.
-- **Percepatan Netto:** Penurunan kecuraman parabola terjadi di akhir lintasan akibat penurunan energi kinetik proyektil.
+Hasil Perhitungan Fisika Simulasi:
+- Jarak Horizontal Aktual (Drag+Angin): ${(r.horizDist/1000).toFixed(2)} km
+- Jarak Ideal Vakum Tanpa Drag: ${(r.ideal.range/1000).toFixed(2)} km
+- Penurunan Jarak Akibat Drag: ${(((r.ideal.range - r.horizDist)/r.ideal.range)*100).toFixed(1)}%
+- Ketinggian Puncak Trajektori: ${r.maxZ.toFixed(0)} m
+- Tinggi Kolom Abu Erupsi: ${r.ash.plumeHeight.toFixed(0)} m
+- Jarak Drift Abu Vulkanik: ${(r.ash.driftDist/1000).toFixed(1)} km
+- Waktu Mengendap Abu: ${(r.ash.settleTime/60).toFixed(1)} menit
+- Koordinat Titik Jatuh Dampak: ${r.endLat.toFixed(3)}°, ${r.endLon.toFixed(3)}°
 
-#### 2. Persebaran Abu Vulkanik & Dampak Angin Muson
-- Vektor angin **${p.vw} m/s** pada azimuth **${p.phiw}°** menghembuskan kolom abu setinggi **${r.ash.plumeHeight.toFixed(0)} m** sejauh **${(r.ash.driftDist/1000).toFixed(1)} km**.
-- Pesisir Selat Sunda di sepanjang vektor angin disarankan meningkatkan kewaspadaan hujan abu.`);
+Format Laporan:
+1. Ringkasan Eksekutif & Evaluasi Risiko Bahaya
+2. Analisis Kinematika & Pengaruh Gaya Drag Aerodinamis (Hukum II Newton)
+3. Pemodelan Sebaran Abu Vulkanik (Hukum Stokes & Vektor Angin Selat Sunda)
+4. Rekomendasi Mitigasi Kawasan Pesisir (Banten / Lampung)`;
+
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetchGeminiWithBackoff(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: userPrompt }] }],
+                        systemInstruction: { parts: [{ text: systemPrompt }] }
+                    })
+                });
+
+                const data = await response.json();
+                const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (responseText && content && window.marked) {
+                    content.innerHTML = marked.parse(responseText);
+                } else if (content) {
+                    content.innerText = responseText || "Gagal memperoleh respons analisis dari AI Gemini.";
                 }
+            } catch (err) {
+                console.error("AI Generation error:", err);
+                if (content) {
+                    content.innerHTML = `<p class="text-red-500 font-bold">Terjadi kesalahan saat menghubungkan ke AI Gemini. Mempergunakan cadangan lokal...</p>`;
+                }
+            } finally {
                 if (loading) loading.classList.add('hidden');
-            }, 1000);
+            }
+        }
+
+        // 2. Gemini Audio Speech Broadcast (gemini-2.5-flash-preview-tts)
+        async function generateAIAudioBriefing() {
+            const btn = document.getElementById('btnGenerateTTS');
+            const playerContainer = document.getElementById('aiAudioPlayerContainer');
+            const audioElement = document.getElementById('aiAudioElement');
+
+            if (btn) btn.disabled = true;
+
+            const r = simResults.A;
+            const p = simParams.A;
+            const scriptText = `Sampaikan narasi laporan singkat dalam bahasa Indonesia dengan nada tegas dan informatif: Perhatian. Laporan evaluasi fisik letusan Anak Krakatau. Kecepatan peluncuran proyektil ${p.v0} meter per detik mencapai jangkauan ${(r.horizDist/1000).toFixed(2)} kilometer. Gaya hambat udara mengurangi jangkauan proyektil sebesar ${(((r.ideal.range - r.horizDist)/r.ideal.range)*100).toFixed(0)} persen. Kolom abu erupsi mencapai ketinggian ${r.ash.plumeHeight.toFixed(0)} meter dan terbawa angin sejauh ${(r.ash.driftDist/1000).toFixed(1)} kilometer menuju azimuth ${p.phiw} derajat. Harap tingkatkan kewaspadaan navigasi di kawasan Selat Sunda.`;
+
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetchGeminiWithBackoff(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: scriptText }] }],
+                        generationConfig: {
+                            responseModalities: ["AUDIO"],
+                            speechConfig: {
+                                voiceConfig: {
+                                    prebuiltVoiceConfig: { voiceName: "Kore" }
+                                }
+                            }
+                        }
+                    })
+                });
+
+                const data = await response.json();
+                const part = data?.candidates?.[0]?.content?.parts?.[0];
+                const audioData = part?.inlineData?.data;
+                const mimeType = part?.inlineData?.mimeType || "";
+
+                if (audioData) {
+                    const sampleRateMatch = mimeType.match(/rate=(\d+)/);
+                    const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 24000;
+                    const pcmBuffer = base64ToArrayBuffer(audioData);
+                    const pcm16 = new Int16Array(pcmBuffer);
+                    const wavBlob = pcmToWav(pcm16, sampleRate);
+                    const audioUrl = URL.createObjectURL(wavBlob);
+
+                    if (audioElement) {
+                        audioElement.src = audioUrl;
+                        playerContainer?.classList.remove('hidden');
+                        audioElement.play().catch(e => console.warn('Autoplay blocked:', e));
+                    }
+                }
+            } catch (err) {
+                console.error("TTS Generation error:", err);
+                alert("Gagal menggenerasi Audio Briefing TTS.");
+            } finally {
+                if (btn) btn.disabled = false;
+            }
+        }
+
+        // 3. Gemini Eruption Image Generator (gemini-3.1-flash-image)
+        async function generateAIEruptionImage() {
+            const container = document.getElementById('aiImageContainer');
+            const loading = document.getElementById('aiImageLoading');
+            const img = document.getElementById('aiEruptionImg');
+
+            container?.classList.remove('hidden');
+            loading?.classList.remove('hidden');
+            img?.classList.add('hidden');
+
+            const p = simParams.A;
+            const r = simResults.A;
+            const prompt = `A realistic high quality wide cinematic 16:9 photo of volcanic eruption of Anak Krakatau island in Sunda Strait Indonesia. Dramatic volcanic eruption plume rising up to ${r.ash.plumeHeight.toFixed(0)} meters high into atmospheric cloud layer, glowing red volcanic bombs flying outwards in arc trajectory with smoke trails at ${p.v0} m/s launch velocity, strong wind drifting the massive ash column, sunset sky over sea water with neighboring volcanic islands in background. Realism, dramatic lighting, detailed ash plume texture.`;
+
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetchGeminiWithBackoff(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+                        generationConfig: {
+                            responseModalities: ['IMAGE'],
+                            imageConfig: { aspectRatio: "16:9" }
+                        }
+                    })
+                });
+
+                const data = await response.json();
+                const part = data?.candidates?.[0]?.content?.parts?.find(pt => pt.inlineData);
+
+                if (part && part.inlineData?.data) {
+                    const imgUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+                    if (img) {
+                        img.src = imgUrl;
+                        img.classList.remove('hidden');
+                    }
+                }
+            } catch (err) {
+                console.error("Image Generation error:", err);
+            } finally {
+                loading?.classList.add('hidden');
+            }
+        }
+
+        // 4. Interactive AI Volcanology Q&A Chat Assistant (gemini-3-flash-preview)
+        let aiChatHistory = [];
+
+        async function handleChatSubmit(e) {
+            if (e) e.preventDefault();
+            const inputEl = document.getElementById('chatInputText');
+            if (!inputEl) return;
+            const userMsg = inputEl.value.trim();
+            if (!userMsg) return;
+
+            inputEl.value = '';
+            appendChatMessage('user', userMsg);
+            await processAIChat(userMsg);
+        }
+
+        function sendQuickChatPrompt(msg) {
+            appendChatMessage('user', msg);
+            processAIChat(msg);
+        }
+
+        function appendChatMessage(sender, text) {
+            const chatLog = document.getElementById('chatMessageLog');
+            if (!chatLog) return;
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = 'flex gap-2.5 items-start';
+
+            if (sender === 'user') {
+                msgDiv.innerHTML = `
+                    <div class="ml-auto bg-indigo-600 text-white p-3 rounded-2xl max-w-[85%] shadow-sm text-xs font-medium">
+                        ${text}
+                    </div>
+                    <div class="w-6 h-6 rounded-full bg-slate-400 text-white flex items-center justify-center text-[10px] font-bold shrink-0">Anda</div>
+                `;
+            } else {
+                msgDiv.innerHTML = `
+                    <div class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0">AI</div>
+                    <div class="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 shadow-sm max-w-[85%] prose prose-slate dark:prose-invert text-xs">
+                        ${window.marked ? marked.parse(text) : text}
+                    </div>
+                `;
+            }
+
+            chatLog.appendChild(msgDiv);
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+
+        async function processAIChat(userMsg) {
+            const p = simParams.A;
+            const r = simResults.A;
+
+            const systemPrompt = `Anda adalah "Dr. Krakatau AI", asisten pakar volkanologi dan fisika interaktif untuk Krakatau Physics Simulator. 
+Data parameter simulasi saat ini: v0 = ${p.v0} m/s, θ = ${p.theta}°, m = ${p.m} kg, Cd = ${p.Cd}, Kecepatan Angin = ${p.vw} m/s, Arah Angin = ${p.phiw}°, Jarak Proyektil = ${(r.horizDist/1000).toFixed(2)} km, Drift Abu = ${(r.ash.driftDist/1000).toFixed(1)} km.
+Jawablah pertanyaan pengguna secara ramah, ringkas, ilmiah, dan mudah dipahami oleh siswa SMA / mahasiswa fisika.`;
+
+            aiChatHistory.push({ role: 'user', parts: [{ text: userMsg }] });
+
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetchGeminiWithBackoff(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: aiChatHistory,
+                        systemInstruction: { parts: [{ text: systemPrompt }] }
+                    })
+                });
+
+                const data = await response.json();
+                const aiReply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Maaf, saya tidak dapat memproses jawaban saat ini.";
+
+                aiChatHistory.push({ role: 'model', parts: [{ text: aiReply }] });
+                appendChatMessage('ai', aiReply);
+            } catch (err) {
+                console.error("Chat AI Error:", err);
+                appendChatMessage('ai', 'Terjadi masalah jaringan saat menghubungi AI Gemini. Silakan coba lagi.');
+            }
         }
 
         window.onload = function () {
