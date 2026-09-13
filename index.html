@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="id" class="h-full" id="htmlTag">
+<html lang="id" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Krakatau Physics Simulator - Simulasi Proyektil & Sebaran Abu Vulkanik</title>
+    <title>Krakatau Physics Simulator - Made by Haekal</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -13,926 +12,713 @@
             theme: {
                 extend: {
                     colors: {
-                        krakatau: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            900: '#0c4a6e',
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a'
                         }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'Fira Code', 'monospace']
                     }
                 }
             }
         }
     </script>
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Leaflet CSS & JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Marked.js for Markdown -->
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
     <style>
-        * {
-            box-sizing: border-box;
-        }
         html, body {
             height: 100%;
-            width: 100%;
-            margin: 0;
-            padding: 0;
-            overflow: hidden !important;
-            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             touch-action: manipulation;
-            transition: background-color 0.3s ease, color 0.3s ease;
         }
-        /* Custom Scrollbar for Light / Dark */
-        .custom-scrollbar::-webkit-scrollbar {
+
+        .pulse-marker-container {
+            position: relative;
+            width: 24px;
+            height: 24px;
+        }
+        .pulse-marker-inner {
+            width: 14px;
+            height: 14px;
+            background-color: #ef4444;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            z-index: 2;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
+        }
+        .pulse-marker-ring {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: rgba(239, 68, 68, 0.4);
+            position: absolute;
+            top: 0;
+            left: 0;
+            animation: pulse-ring 2s infinite ease-out;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+
+        .flying-bomb-container {
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle, #f97316 0%, #dc2626 100%);
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 0 12px #f97316;
+        }
+
+        .crater-blast-inner {
+            font-size: 14px;
+            font-weight: bold;
+            color: #ef4444;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
+            animation: pop-bounce 0.8s ease-out forwards;
+        }
+        @keyframes pop-bounce {
+            0% { transform: scale(0.2); opacity: 0; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(1.0); opacity: 0.9; }
+        }
+
+        .dark .leaflet-tile-pane {
+            filter: brightness(0.7) invert(1) contrast(1.2) hue-rotate(200deg) saturate(0.3);
+        }
+
+        input[type=range] {
+            accent-color: #2563eb;
+        }
+
+        ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
         }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f5f9;
+        ::-webkit-scrollbar-track {
+            background: transparent;
         }
-        .dark .custom-scrollbar::-webkit-scrollbar-track {
-            background: #0f172a;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
+        ::-webkit-scrollbar-thumb {
             background: #cbd5e1;
-            border-radius: 4px;
+            border-radius: 3px;
         }
-        .dark .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-        .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        .dark ::-webkit-scrollbar-thumb {
             background: #475569;
-        }
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        .leaflet-container {
-            background: #e2e8f0 !important;
-            font-family: 'Inter', sans-serif;
-            width: 100% !important;
-            height: 100% !important;
-        }
-        .dark .leaflet-container {
-            background: #0b1120 !important;
-        }
-        /* Standard OpenStreetMap Tile Dark Inversion - Applied only in Dark Mode */
-        .dark-tiles .leaflet-tile-pane {
-            filter: brightness(0.65) invert(1) contrast(2.3) hue-rotate(200deg) saturate(0.3);
-        }
-        .leaflet-popup-content-wrapper, .leaflet-popup-tip {
-            background: #ffffff !important;
-            color: #1e293b !important;
-            border: 1px solid #cbd5e1;
-            border-radius: 12px !important;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1) !important;
-        }
-        .dark .leaflet-popup-content-wrapper, .dark .leaflet-popup-tip {
-            background: #1e293b !important;
-            color: #f3f4f6 !important;
-            border: 1px solid #475569;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
-        }
-        .pulse-marker-container {
-            background: transparent !important;
-            border: none !important;
-        }
-        .pulse-marker-inner {
-            width: 100%;
-            height: 100%;
-            background: rgba(234, 88, 12, 0.9);
-            border-radius: 50%;
-            border: 2px solid #ffffff;
-            box-shadow: 0 0 12px #ea580c;
-            animation: pulse-ring 2s infinite;
-        }
-        @keyframes pulse-ring {
-            0% { transform: scale(0.85); box-shadow: 0 0 0 0 rgba(234, 88, 12, 0.8); }
-            70% { transform: scale(1.35); box-shadow: 0 0 0 10px rgba(234, 88, 12, 0); }
-            100% { transform: scale(0.85); box-shadow: 0 0 0 0 rgba(234, 88, 12, 0); }
         }
     </style>
 </head>
-<body class="h-full w-full flex flex-col overflow-hidden text-slate-800 bg-slate-100 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200">
+<body class="bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200 selection:bg-blue-500 selection:text-white">
 
-    <!-- Top Header Navigation -->
-    <header class="bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 px-2 sm:px-4 py-2 flex items-center justify-between shrink-0 z-40 shadow-xs transition-colors gap-2 w-full max-w-full overflow-hidden">
-        <div class="flex items-center space-x-2 shrink-0 min-w-0 max-w-[40%] xs:max-w-[48%] sm:max-w-none">
-            <div class="bg-blue-600 dark:bg-blue-600 p-1.5 sm:p-2 rounded-xl shadow-xs text-white shrink-0">
-                <i data-lucide="flame" class="w-4 h-4 sm:w-5 sm:h-5 text-sky-200"></i>
-            </div>
-            <div class="min-w-0">
-                <div class="flex items-center gap-1.5">
-                    <h1 class="font-bold text-xs sm:text-base leading-tight tracking-tight text-slate-800 dark:text-slate-100 truncate">
-                        Krakatau Physics
-                    </h1>
-                    <span class="text-[9px] sm:text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800 shrink-0 hidden md:inline-block">Made by Haekal</span>
+    <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-[1000] shadow-sm">
+        <div class="px-4 py-2.5 flex items-center justify-between gap-2 overflow-x-auto whitespace-nowrap">
+            <div class="flex items-center gap-3 shrink-0">
+                <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20">
+                    <i data-lucide="flame" class="w-5 h-5"></i>
                 </div>
-                <p class="text-[10px] sm:text-[11px] text-slate-500 dark:text-slate-400 hidden md:block">
-                    Simulasi Gerak Proyektil, Hambatan Udara & Pengaruh Angin di Selat Sunda
-                </p>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="font-bold text-lg text-slate-900 dark:text-white leading-none">Krakatau Physics</h1>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5 hidden sm:block">Simulasi Gerak Proyektil & Sebaran Abu Vulkanik Selat Sunda</p>
+                </div>
             </div>
-        </div>
 
-        <!-- Header Actions & Controls (Horizontally Scrollable on Mobile) -->
-        <div class="flex items-center space-x-1.5 sm:space-x-2 overflow-x-auto no-scrollbar py-0.5 shrink-0 max-w-[60%] xs:max-w-[52%] sm:max-w-none flex-nowrap touch-pan-x">
-            <!-- Light/Dark Mode Switcher Button -->
-            <button id="themeToggleBtn" onclick="toggleTheme()" class="p-1.5 text-slate-600 dark:text-sky-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-1 text-xs font-semibold shrink-0" title="Beralih Tema (Light/Dark)">
-                <i data-lucide="sun" id="themeIcon" class="w-4 h-4 text-blue-500"></i>
-                <span id="themeText" class="hidden lg:inline text-[11px]">Mode Terang</span>
-            </button>
-
-            <button id="mobileControlToggle" onclick="toggleMobileControls()" class="md:hidden px-2 py-1.5 text-xs font-bold rounded-lg bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-1 shadow-xs transition shrink-0">
-                <i data-lucide="sliders" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-200"></i>
-                <span id="mobileControlText" class="text-[11px]">Parameter</span>
-            </button>
-            <button onclick="switchTab('ai')" class="px-2 sm:px-2.5 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-600 dark:hover:bg-blue-500 border border-blue-500 flex items-center gap-1 shadow-xs transition shrink-0 whitespace-nowrap">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-sky-200"></i>
-                <span class="text-[11px]">AI Volcanologist</span>
-            </button>
-            <button id="toggleCompareBtn" onclick="toggleCompareMode()" class="px-2 sm:px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center gap-1 transition shrink-0 whitespace-nowrap">
-                <i data-lucide="columns-2" class="w-3.5 h-3.5 text-blue-500"></i>
-                <span id="compareBtnText" class="text-[11px]">Bandingkan: Off</span>
-            </button>
-            <button onclick="openModal('theoryModal')" class="px-2 sm:px-2.5 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 flex items-center gap-1 transition shrink-0 whitespace-nowrap">
-                <i data-lucide="book-open" class="w-3.5 h-3.5 text-blue-500"></i>
-                <span class="text-[11px]">Teori</span>
-            </button>
-            <button onclick="resetToDefaults()" class="p-1.5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition shrink-0" title="Reset Parameter">
-                <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-            </button>
+            <div class="flex items-center gap-2 shrink-0">
+                <button onclick="toggleTheme()" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-200 transition cursor-pointer" title="Ganti Tema">
+                    <i data-lucide="sun" id="themeIcon" class="w-4 h-4"></i>
+                </button>
+                <button onclick="toggleMobileControls()" class="md:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 text-white font-medium text-xs shadow-sm hover:bg-blue-700 transition cursor-pointer">
+                    <i data-lucide="sliders" class="w-3.5 h-3.5"></i> Parameter
+                </button>
+                <button onclick="openCompareModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-600 text-white font-medium text-xs shadow-sm hover:bg-amber-700 transition cursor-pointer">
+                    <i data-lucide="git-compare" class="w-3.5 h-3.5"></i> Bandingkan
+                </button>
+                <button onclick="openTheoryModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-600 text-white font-medium text-xs shadow-sm hover:bg-orange-700 transition cursor-pointer">
+                    <i data-lucide="book-open" class="w-3.5 h-3.5"></i> Teori
+                </button>
+            </div>
         </div>
     </header>
 
-    <!-- Main App Container (No outer scrollbars) -->
-    <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative min-h-0 w-full">
+    <div class="flex-1 flex flex-col md:flex-row min-h-0 relative overflow-hidden">
 
-        <!-- Left Sidebar: Controls & Parameter Form -->
-        <aside id="controlSidebar" class="hidden md:flex fixed md:relative inset-0 md:inset-auto z-[9999] md:z-10 w-full md:w-80 lg:w-96 bg-slate-50/90 dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex-col shrink-0 overflow-y-auto custom-scrollbar max-h-full shadow-xl md:shadow-none pb-16 md:pb-4 transition-colors">
-            <div class="p-4 space-y-4">
-                <div class="flex items-center justify-between md:hidden border-b border-slate-200 dark:border-slate-800 pb-2.5">
-                    <span class="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider flex items-center gap-1.5">
-                        <i data-lucide="sliders" class="w-4 h-4 text-blue-600"></i> Pengaturan Parameter
-                    </span>
-                    <button onclick="toggleMobileControls()" class="p-1.5 text-slate-500 dark:text-slate-400 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700">
-                        <i data-lucide="x" class="w-5 h-5"></i>
-                    </button>
+        <aside id="controlSidebar" class="fixed inset-0 z-[2000] md:relative md:z-20 w-full md:w-80 lg:w-96 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col hidden md:flex transition-all duration-300 shadow-xl md:shadow-none overflow-y-auto">
+            
+            <div class="p-4 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between sticky top-0 bg-white/95 dark:bg-slate-800/95 backdrop-blur z-10">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="sliders" class="w-4 h-4 text-blue-600 dark:text-blue-400"></i>
+                    <h2 class="font-bold text-sm text-slate-800 dark:text-slate-100 uppercase tracking-wider">Pengaturan Parameter</h2>
                 </div>
-
-                <!-- Compare Mode Active Selector -->
-                <div id="compareSelectorContainer" class="hidden p-3 bg-blue-50/60 dark:bg-slate-800/80 border border-blue-200 dark:border-blue-500/30 rounded-xl space-y-2">
-                    <span class="text-xs font-semibold text-slate-700 dark:text-blue-300 block">Ubah Parameter Untuk:</span>
-                    <div class="flex gap-2">
-                        <button id="selectSimABtn" onclick="setActiveSimTarget('A')" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-blue-600 text-white border border-blue-500 shadow-xs">Simulasi A (Biru)</button>
-                        <button id="selectSimBBtn" onclick="setActiveSimTarget('B')" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-bold bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-600">Simulasi B (Cyan)</button>
-                    </div>
-                </div>
-
-                <!-- Material Type Selector -->
-                <div class="space-y-2 bg-white dark:bg-slate-800/60 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-700/80 shadow-2xs">
-                    <label class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center justify-between">
-                        <span class="flex items-center gap-1.5"><i data-lucide="layers" class="w-4 h-4 text-blue-600 dark:text-blue-400"></i> Jenis Material Erupsi</span>
-                    </label>
-                    <select id="param_materialType" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-white focus:outline-none focus:border-blue-500 font-medium shadow-2xs" onchange="updateParam('materialType', this.value)">
-                        <option value="combined">🌪️ Combined (Bom + Abu Vulkanik)</option>
-                        <option value="bomb">🪨 Bom Vulkanik (Ballistic Projectile)</option>
-                        <option value="fine_ash">☁️ Abu Vulkanik Halus (Fine Ash - 0.001 mm)</option>
-                        <option value="coarse_ash">🌋 Abu Kasar / Lapili (Coarse Ash - 2.0 mm)</option>
-                    </select>
-                    <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-normal">Abu vulkanik terbawa arus angin atmosfer & mengendap sesuai Kecepatan Jatuh Stokes.</p>
-                </div>
-
-                <!-- Parameter Section 1: Launch Kinematics -->
-                <div class="space-y-3 bg-white dark:bg-slate-800/40 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-2xs">
-                    <h2 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                        <i data-lucide="rocket" class="w-4 h-4 text-blue-600 dark:text-blue-400"></i> Parameter Peluncuran
-                    </h2>
-
-                    <!-- Initial Speed -->
-                    <div>
-                        <div class="flex justify-between text-xs mb-1">
-                            <span class="text-slate-700 dark:text-slate-300 font-medium">Kecepatan Awal (v₀)</span>
-                            <span class="font-mono text-blue-700 dark:text-blue-300 font-bold"><span id="val_v0">180</span> m/s</span>
-                        </div>
-                        <input type="range" id="param_v0" min="20" max="400" step="5" value="180" class="w-full accent-blue-600 dark:accent-blue-400 cursor-pointer" oninput="updateParam('v0', this.value)">
-                    </div>
-
-                    <!-- Elevation Angle -->
-                    <div>
-                        <div class="flex justify-between text-xs mb-1">
-                            <span class="text-slate-700 dark:text-slate-300 font-medium">Sudut Elevasi (θ)</span>
-                            <span class="font-mono text-blue-700 dark:text-blue-300 font-bold"><span id="val_theta">45</span>°</span>
-                        </div>
-                        <input type="range" id="param_theta" min="5" max="85" step="1" value="45" class="w-full accent-blue-600 dark:accent-blue-400 cursor-pointer" oninput="updateParam('theta', this.value)">
-                    </div>
-
-                    <!-- Azimuth / Launch Direction -->
-                    <div>
-                        <div class="flex justify-between text-xs mb-1">
-                            <span class="text-slate-700 dark:text-slate-300 font-medium">Arah Peluncuran (φ Azimuth)</span>
-                            <span class="font-mono text-blue-700 dark:text-blue-300 font-bold"><span id="val_phi">60</span>° (<span id="txt_phi_dir">NE</span>)</span>
-                        </div>
-                        <input type="range" id="param_phi" min="0" max="359" step="5" value="60" class="w-full accent-blue-600 dark:accent-blue-400 cursor-pointer" oninput="updateParam('phi', this.value)">
-                        <div class="flex justify-between text-[10px] text-slate-400 dark:text-slate-500 mt-1 font-mono">
-                            <span>0°(U)</span><span>90°(T)</span><span>180°(S)</span><span>270°(B)</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Parameter Section 2: Particle Physical Properties -->
-                <div class="space-y-3 bg-white dark:bg-slate-800/40 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-2xs">
-                    <h2 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                        <i data-lucide="box" class="w-4 h-4 text-blue-600 dark:text-blue-400"></i> Sifat Fisik Material Proyektil
-                    </h2>
-
-                    <!-- Particle Mass -->
-                    <div>
-                        <div class="flex justify-between text-xs mb-1">
-                            <span class="text-slate-700 dark:text-slate-300 font-medium">Massa Partikel Bom (m)</span>
-                            <span class="font-mono text-blue-700 dark:text-blue-300 font-bold"><span id="val_m">10.0</span> kg</span>
-                        </div>
-                        <input type="range" id="param_m" min="0.1" max="100" step="0.5" value="10.0" class="w-full accent-blue-600 dark:accent-blue-400 cursor-pointer" oninput="updateParam('m', this.value)">
-                    </div>
-
-                    <!-- Drag Coefficient -->
-                    <div>
-                        <div class="flex justify-between text-xs mb-1">
-                            <span class="text-slate-700 dark:text-slate-300 font-medium">Koefisien Drag (C<sub>D</sub>)</span>
-                            <span class="font-mono text-blue-700 dark:text-blue-300 font-bold"><span id="val_Cd">0.50</span></span>
-                        </div>
-                        <input type="range" id="param_Cd" min="0.0" max="1.2" step="0.01" value="0.50" class="w-full accent-blue-600 dark:accent-blue-400 cursor-pointer" oninput="updateParam('Cd', this.value)">
-                        <span class="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">Bola pejal ~0.47, Batuan vulkanik ~0.6-0.8</span>
-                    </div>
-
-                    <!-- Cross-sectional Area -->
-                    <div>
-                        <div class="flex justify-between text-xs mb-1">
-                            <span class="text-slate-700 dark:text-slate-300 font-medium">Luas Penampang (A)</span>
-                            <span class="font-mono text-blue-700 dark:text-blue-300 font-bold"><span id="val_A">0.020</span> m²</span>
-                        </div>
-                        <input type="range" id="param_A" min="0.002" max="0.5" step="0.002" value="0.020" class="w-full accent-blue-600 dark:accent-blue-400 cursor-pointer" oninput="updateParam('A', this.value)">
-                    </div>
-
-                    <!-- Ash Grain Size Parameter -->
-                    <div>
-                        <div class="flex justify-between text-xs mb-1">
-                            <span class="text-slate-700 dark:text-slate-300 font-medium">Ukuran Bulir Abu (d<sub>ash</sub>)</span>
-                            <span class="font-mono text-indigo-600 dark:text-indigo-300 font-bold"><span id="val_ashSize">0.250</span> mm</span>
-                        </div>
-                        <input type="range" id="param_ashSize" min="0.001" max="2.0" step="0.001" value="0.250" class="w-full accent-indigo-600 dark:accent-indigo-400 cursor-pointer" oninput="updateParam('ashSize', this.value)">
-                        <span class="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">Toleransi presisi mikro: 0.001 mm – 2.000 mm</span>
-                    </div>
-                </div>
-
-                <!-- Parameter Section 3: Atmosphere & Wind -->
-                <div class="space-y-3 bg-white dark:bg-slate-800/40 p-3.5 rounded-xl border border-slate-200/80 dark:border-slate-800 shadow-2xs">
-                    <h2 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                        <i data-lucide="wind" class="w-4 h-4 text-blue-600 dark:text-blue-400"></i> Lingkungan & Vektor Angin
-                    </h2>
-
-                    <!-- Wind Speed -->
-                    <div>
-                        <div class="flex justify-between text-xs mb-1">
-                            <span class="text-slate-700 dark:text-slate-300 font-medium">Kecepatan Angin (v<sub>w</sub>)</span>
-                            <span class="font-mono text-cyan-600 dark:text-cyan-400 font-bold"><span id="val_vw">12</span> m/s</span>
-                        </div>
-                        <input type="range" id="param_vw" min="0" max="40" step="1" value="12" class="w-full accent-cyan-600 dark:accent-cyan-400 cursor-pointer" oninput="updateParam('vw', this.value)">
-                    </div>
-
-                    <!-- Wind Direction -->
-                    <div>
-                        <div class="flex justify-between text-xs mb-1">
-                            <span class="text-slate-700 dark:text-slate-300 font-medium">Arah Hembusan Angin (φ<sub>w</sub>)</span>
-                            <span class="font-mono text-cyan-600 dark:text-cyan-400 font-bold"><span id="val_phiw">240</span>° (<span id="txt_phiw_dir">SW</span>)</span>
-                        </div>
-                        <input type="range" id="param_phiw" min="0" max="359" step="5" value="240" class="w-full accent-cyan-600 dark:accent-cyan-400 cursor-pointer" oninput="updateParam('phiw', this.value)">
-                        <span class="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">Arah ke mana angin bertiup menuju</span>
-                    </div>
-
-                    <!-- Atmospheric Constants Accordion -->
-                    <details class="text-xs text-slate-600 dark:text-slate-400 pt-1">
-                        <summary class="cursor-pointer hover:text-slate-800 dark:hover:text-slate-200 font-semibold text-[11px] flex items-center gap-1">
-                            <i data-lucide="settings-2" class="w-3.5 h-3.5"></i> Konstanta Fisika Lanjutan
-                        </summary>
-                        <div class="mt-2 space-y-2 pl-2 border-l border-slate-300 dark:border-slate-700">
-                            <div>
-                                <label class="block text-[10px]">Massa Jenis Udara (ρ kg/m³)</label>
-                                <input type="number" id="param_rho" step="0.01" value="1.225" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded px-2.5 py-1 text-xs text-slate-800 dark:text-slate-200 mt-0.5" onchange="updateParam('rho', this.value)">
-                            </div>
-                            <div>
-                                <label class="block text-[10px]">Percepatan Gravitasi (g m/s²)</label>
-                                <input type="number" id="param_g" step="0.01" value="9.81" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded px-2.5 py-1 text-xs text-slate-800 dark:text-slate-200 mt-0.5" onchange="updateParam('g', this.value)">
-                            </div>
-                            <div>
-                                <label class="block text-[10px]">Ketinggian Kawah Awal (z₀ m)</label>
-                                <input type="number" id="param_z0" step="10" value="155" class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded px-2.5 py-1 text-xs text-slate-800 dark:text-slate-200 mt-0.5" onchange="updateParam('z0', this.value)">
-                            </div>
-                        </div>
-                    </details>
-                </div>
-
-                <!-- Simulation Trigger Action -->
-                <button onclick="runSimulation(); if(window.innerWidth < 768) toggleMobileControls();" class="w-full py-3 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-bold text-xs sm:text-sm rounded-xl shadow-xs transition duration-150 flex items-center justify-center gap-2">
-                    <i data-lucide="play" class="w-4 h-4 fill-current text-white"></i> SIMULASIKAN LINTASAN & ABU
+                <button onclick="toggleMobileControls()" class="md:hidden p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
+            </div>
 
-                <!-- Developer Attribution Badge -->
-                <div class="text-center pt-2 pb-1 border-t border-slate-200 dark:border-slate-800/80">
-                    <span class="text-[11px] text-slate-500 dark:text-slate-400 font-medium flex items-center justify-center gap-1">
-                        <i data-lucide="code" class="w-3.5 h-3.5 text-slate-600 dark:text-slate-400"></i> Made by <strong class="text-slate-800 dark:text-slate-200 font-semibold">Haekal</strong>
-                    </span>
+            <div class="p-4 space-y-5 flex-1">
+                
+                <div class="bg-blue-50/60 dark:bg-slate-700/50 p-3.5 rounded-xl border border-blue-100 dark:border-slate-600">
+                    <label class="block text-xs font-bold text-blue-900 dark:text-blue-300 uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
+                        <i data-lucide="layers" class="w-3.5 h-3.5 text-blue-600 dark:text-blue-400"></i> Jenis Material Erupsi
+                    </label>
+                    <select id="simMaterial" onchange="onMaterialChange()" class="w-full text-xs font-semibold bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg p-2 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 outline-none">
+                        <option value="combined">🌋 Combined (Bom + Abu Vulkanik)</option>
+                        <option value="bomb">🪨 Bom Vulkanik Balistik (Batu Padat)</option>
+                        <option value="fine_ash">☁️ Abu Vulkanik Halus (0.001 - 0.1 mm)</option>
+                        <option value="coarse_ash">🌪️ Abu Kasar / Lapili (2.0 mm)</option>
+                    </select>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                        Pilih jenis material untuk memuat nilai default fisik & sebaran atmosferik.
+                    </p>
                 </div>
 
+                <div class="space-y-3.5">
+                    <h3 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="navigation" class="w-3.5 h-3.5 text-blue-500"></i> Parameter Peluncuran
+                    </h3>
+
+                    <div>
+                        <div class="flex justify-between text-xs font-medium mb-1">
+                            <span>Kecepatan Awal (v₀)</span>
+                            <span class="font-bold text-blue-600 dark:text-blue-400" id="val_v0">180 m/s</span>
+                        </div>
+                        <input type="range" id="param_v0" min="20" max="400" value="180" step="5" oninput="runSimulation()" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                    </div>
+
+\                    <div>
+                        <div class="flex justify-between text-xs font-medium mb-1">
+                            <span>Sudut Elevasi (θ)</span>
+                            <span class="font-bold text-blue-600 dark:text-blue-400" id="val_theta">45°</span>
+                        </div>
+                        <input type="range" id="param_theta" min="10" max="85" value="45" step="1" oninput="runSimulation()" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs font-medium mb-1">
+                            <span>Arah Peluncuran (φ Azimuth)</span>
+                            <span class="font-bold text-blue-600 dark:text-blue-400" id="val_phi">60° (NE)</span>
+                        </div>
+                        <input type="range" id="param_phi" min="0" max="360" value="60" step="5" oninput="runSimulation()" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                </div>
+
+                <div class="space-y-3.5 pt-2 border-t border-slate-200 dark:border-slate-700">
+                    <h3 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="box" class="w-3.5 h-3.5 text-blue-500"></i> Sifat Fisik Material
+                    </h3>
+
+                    <div>
+                        <div class="flex justify-between text-xs font-medium mb-1">
+                            <span>Massa Partikel Bom (m)</span>
+                            <span class="font-bold text-blue-600 dark:text-blue-400" id="val_m">10.0 kg</span>
+                        </div>
+                        <input type="range" id="param_m" min="0.1" max="100" value="10" step="0.5" oninput="runSimulation()" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs font-medium mb-1">
+                            <span>Koefisien Drag (C<sub>D</sub>)</span>
+                            <span class="font-bold text-blue-600 dark:text-blue-400" id="val_Cd">0.50</span>
+                        </div>
+                        <input type="range" id="param_Cd" min="0.1" max="1.2" value="0.5" step="0.05" oninput="runSimulation()" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs font-medium mb-1">
+                            <span>Luas Penampang (A)</span>
+                            <span class="font-bold text-blue-600 dark:text-blue-400" id="val_A">0.020 m²</span>
+                        </div>
+                        <input type="range" id="param_A" min="0.001" max="0.2" value="0.02" step="0.005" oninput="runSimulation()" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs font-medium mb-1">
+                            <span>Ukuran Bulir Abu (d<sub>ash</sub>)</span>
+                            <span class="font-bold text-blue-600 dark:text-blue-400" id="val_dash">0.100 mm</span>
+                        </div>
+                        <input type="range" id="param_dash" min="0.001" max="2.000" value="0.100" step="0.001" oninput="runSimulation()" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                </div>
+
+                <div class="space-y-3.5 pt-2 border-t border-slate-200 dark:border-slate-700">
+                    <h3 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                        <i data-lucide="wind" class="w-3.5 h-3.5 text-blue-500"></i> Vektor Angin & Lingkungan
+                    </h3>
+
+                    <div>
+                        <div class="flex justify-between text-xs font-medium mb-1">
+                            <span>Kecepatan Angin (v<sub>w</sub>)</span>
+                            <span class="font-bold text-blue-600 dark:text-blue-400" id="val_vw">12 m/s</span>
+                        </div>
+                        <input type="range" id="param_vw" min="0" max="40" value="12" step="1" oninput="runSimulation()" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                    </div>
+
+                    <div>
+                        <div class="flex justify-between text-xs font-medium mb-1">
+                            <span>Arah Tiupan Angin (φ<sub>w</sub>)</span>
+                            <span class="font-bold text-blue-600 dark:text-blue-400" id="val_phiw">225° (SW)</span>
+                        </div>
+                        <input type="range" id="param_phiw" min="0" max="360" value="225" step="5" oninput="runSimulation()" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="p-4 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 sticky bottom-0">
+                <button onclick="runSimulationAnimation()" class="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transition transform active:scale-95 cursor-pointer">
+                    <i data-lucide="play" class="w-4 h-4 fill-current"></i> SIMULASIKAN LEDAKAN
+                </button>
             </div>
         </aside>
 
-        <!-- Right Main Viewport Container -->
-        <main class="flex-1 flex flex-col overflow-hidden bg-slate-100 dark:bg-slate-950 min-h-0 w-full relative transition-colors z-0">
+        <main class="flex-1 flex flex-col min-w-0 bg-slate-100 dark:bg-slate-900 relative z-0">
             
-            <!-- View Mode Navigation Bar -->
-            <div class="bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 px-3 flex items-center overflow-x-auto no-scrollbar shrink-0 gap-1 w-full transition-colors z-20">
-                <button id="tabBtnMap" onclick="switchTab('map')" class="py-2.5 px-3.5 text-xs font-bold border-b-2 border-blue-600 text-blue-600 dark:text-blue-400 flex items-center gap-1.5 whitespace-nowrap">
+            <div class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-4 flex items-center gap-2 overflow-x-auto">
+                <button onclick="switchTab('map')" id="tabBtnMap" class="py-2.5 px-3 border-b-2 border-blue-600 text-blue-600 dark:text-blue-400 font-bold text-xs flex items-center gap-1.5 shrink-0 cursor-pointer">
                     <i data-lucide="map" class="w-4 h-4"></i> Peta Selat Sunda
                 </button>
-                <button id="tabBtnCharts" onclick="switchTab('charts')" class="py-2.5 px-3.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 flex items-center gap-1.5 whitespace-nowrap">
+                <button onclick="switchTab('charts')" id="tabBtnCharts" class="py-2.5 px-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-bold text-xs flex items-center gap-1.5 shrink-0 cursor-pointer">
                     <i data-lucide="line-chart" class="w-4 h-4"></i> Grafik Telemetri
                 </button>
-                <button id="tabBtn3D" onclick="switchTab('3d')" class="py-2.5 px-3.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 flex items-center gap-1.5 whitespace-nowrap">
+                <button onclick="switchTab('3d')" id="tabBtn3D" class="py-2.5 px-3 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 font-bold text-xs flex items-center gap-1.5 shrink-0 cursor-pointer">
                     <i data-lucide="box" class="w-4 h-4"></i> Visualisasi 3D
                 </button>
-                <button id="tabBtnAI" onclick="switchTab('ai')" class="py-2.5 px-3.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 dark:text-slate-400 flex items-center gap-1.5 whitespace-nowrap">
-                    <i data-lucide="sparkles" class="w-4 h-4 text-blue-500"></i> AI Insights
-                </button>
-                <button id="tabBtnScenarios" onclick="switchTab('scenarios')" class="py-2.5 px-3.5 text-xs font-semibold border-b-2 border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 flex items-center gap-1.5 whitespace-nowrap">
-                    <i data-lucide="flask-conical" class="w-4 h-4"></i> Eksperimen
-                </button>
             </div>
 
-            <!-- Tab 1: Geographic Map View -->
-            <div id="tabContentMap" class="flex-1 flex flex-col relative overflow-hidden min-h-0 w-full h-full">
+            <div id="tabContentMap" class="flex-1 relative flex flex-col min-h-0">
                 
-                <!-- Responsive Horizontally Scrollable Stat Ribbon Overlay -->
-                <div class="absolute top-2 left-2 right-2 z-10 pointer-events-none">
-                    <!-- Desktop / Tablet Scrollable Stat Overlay Bar -->
-                    <div class="hidden md:flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5 pointer-events-auto">
-                        <div class="bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl shadow-md shrink-0 min-w-[140px] flex-1">
-                            <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold block">Jarak Proyektil Bom</span>
-                            <span class="font-mono text-sm font-bold text-orange-600 dark:text-orange-400" id="stat_range">0 km</span>
-                            <span class="text-[10px] text-slate-400 dark:text-slate-500 block" id="stat_ideal_range">Ideal: 0 km</span>
-                        </div>
-
-                        <div class="bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl shadow-md shrink-0 min-w-[140px] flex-1">
-                            <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold block">Tinggi Kolom Erupsi</span>
-                            <span class="font-mono text-sm font-bold text-amber-600 dark:text-amber-400" id="stat_max_alt">0 m</span>
-                            <span class="text-[10px] text-purple-600 dark:text-purple-400 block" id="stat_plume_height">Kolom Abu: 0 m</span>
-                        </div>
-
-                        <div class="bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl shadow-md shrink-0 min-w-[140px] flex-1">
-                            <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold block">Waktu Terbang Bom</span>
-                            <span class="font-mono text-sm font-bold text-cyan-600 dark:text-cyan-400" id="stat_time">0 detik</span>
-                            <span class="text-[10px] text-slate-400 dark:text-slate-500 block" id="stat_impact_speed">Jatuh: 0 m/s</span>
-                        </div>
-
-                        <div class="bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl shadow-md shrink-0 min-w-[150px] flex-1">
-                            <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-wider font-semibold block">Titik Jatuh Akhir</span>
-                            <span class="font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400 block truncate" id="stat_coords">-6.10, 105.42</span>
-                            <span class="text-[10px] text-slate-400 dark:text-slate-500 block" id="stat_bearing">Arah: 0°</span>
-                        </div>
-
-                        <div class="bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl shadow-md shrink-0 min-w-[140px] flex-1">
-                            <span class="text-[10px] text-purple-700 dark:text-purple-300 uppercase tracking-wider font-semibold block">Sebaran Abu Vulkanik</span>
-                            <span class="font-mono text-xs font-bold text-purple-600 dark:text-purple-400 block" id="stat_ash_drift">Drift: 0 km</span>
-                            <span class="text-[10px] text-slate-500 dark:text-slate-400 block" id="stat_ash_settle_time">Mengendap: 0 m</span>
-                        </div>
+                <div class="absolute top-3 left-3 right-3 z-10 flex gap-2 overflow-x-auto pb-1 pointer-events-none">
+                    <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur border border-slate-200/80 dark:border-slate-700/80 rounded-xl p-2.5 shadow-md flex-1 min-w-[130px] pointer-events-auto">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">JARAK PROYEKTIIL BOM</span>
+                        <span class="text-sm font-black text-blue-600 dark:text-blue-400" id="stat_range">0.00 km</span>
+                        <span class="text-[10px] text-slate-400 block" id="stat_ideal_range">Ideal: 0.00 km</span>
                     </div>
-
-                    <!-- Mobile Stat Overlay Bar -->
-                    <div class="md:hidden flex items-center justify-between gap-1.5 overflow-x-auto no-scrollbar bg-white/95 dark:bg-slate-900/95 backdrop-blur border border-slate-200 dark:border-slate-800 p-2 rounded-xl shadow-md pointer-events-auto">
-                        <div class="shrink-0 text-center px-1.5 border-r border-slate-200 dark:border-slate-800">
-                            <span class="text-[9px] text-slate-500 block uppercase">Jarak Bom</span>
-                            <span class="font-mono text-xs font-bold text-orange-600 dark:text-orange-400" id="stat_range_mob">0 km</span>
-                        </div>
-                        <div class="shrink-0 text-center px-1.5 border-r border-slate-200 dark:border-slate-800">
-                            <span class="text-[9px] text-slate-500 block uppercase">Tinggi Max</span>
-                            <span class="font-mono text-xs font-bold text-amber-600 dark:text-amber-400" id="stat_max_alt_mob">0 m</span>
-                        </div>
-                        <div class="shrink-0 text-center px-1.5 border-r border-slate-200 dark:border-slate-800">
-                            <span class="text-[9px] text-slate-500 block uppercase">Waktu</span>
-                            <span class="font-mono text-xs font-bold text-cyan-600 dark:text-cyan-400" id="stat_time_mob">0s</span>
-                        </div>
-                        <div class="shrink-0 text-center px-1.5">
-                            <span class="text-[9px] text-slate-500 block uppercase">Drift Abu</span>
-                            <span class="font-mono text-xs font-bold text-purple-600 dark:text-purple-400" id="stat_ash_mob">0 km</span>
-                        </div>
+                    <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur border border-slate-200/80 dark:border-slate-700/80 rounded-xl p-2.5 shadow-md flex-1 min-w-[130px] pointer-events-auto">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">TINGGI KOLOM ERUPSI</span>
+                        <span class="text-sm font-black text-sky-600 dark:text-sky-400/85" id="stat_height">0 m</span>
+                        <span class="text-[10px] text-slate-400 block" id="stat_ash_height">Kolom Abu: 0 m</span>
+                    </div>
+                    <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur border border-slate-200/80 dark:border-slate-700/80 rounded-xl p-2.5 shadow-md flex-1 min-w-[130px] pointer-events-auto">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">WAKTU TERBANG BOM</span>
+                        <span class="text-sm font-black text-sky-600/85 dark:text-sky-400" id="stat_time">0.0 s</span>
+                        <span class="text-[10px] text-slate-400 block" id="stat_impact_v">Jatuh: 0 m/s</span>
+                    </div>
+                    <div class="bg-white/90 dark:bg-slate-800/90 backdrop-blur border border-slate-200/80 dark:border-slate-700/80 rounded-xl p-2.5 shadow-md flex-1 min-w-[130px] pointer-events-auto">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">DRIFT ABU VULKANIK</span>
+                        <span class="text-sm font-black text-grey-600 dark:text-grey-400" id="stat_ash_drift">0.0 km</span>
+                        <span class="text-[10px] text-slate-400 block" id="stat_ash_time">Settle: 0 m</span>
                     </div>
                 </div>
 
-                <!-- Leaflet Map Container -->
-                <div id="map" class="w-full h-full z-0 flex-1"></div>
+                <div id="map" class="w-full flex-1 z-0 bg-slate-200 dark:bg-slate-800"></div>
 
-                <!-- Map Legend -->
-                <div class="absolute bottom-3 right-3 z-10 bg-white/90 dark:bg-slate-900/90 backdrop-blur border border-slate-200 dark:border-slate-800 p-2.5 rounded-xl text-xs space-y-1 shadow-md max-w-[180px] sm:max-w-xs pointer-events-auto">
-                    <div class="font-bold text-slate-800 dark:text-slate-300 text-[11px] mb-1 flex items-center justify-between">
-                        <span>Legenda Peta</span>
-                        <i data-lucide="info" class="w-3.5 h-3.5 text-slate-400"></i>
+                <div class="absolute bottom-4 right-4 z-10 bg-white/90 dark:bg-slate-800/90 backdrop-blur border border-slate-200 dark:border-slate-700 rounded-xl p-3 shadow-lg text-xs space-y-1.5 pointer-events-auto max-w-[200px]">
+                    <div class="font-bold text-slate-700 dark:text-slate-200 mb-1 border-b border-slate-200 dark:border-slate-700 pb-1">Legenda Peta</div>
+                    <div class="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+                        <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span> Anak Krakatau
                     </div>
-                    <div class="flex items-center gap-1.5">
-                        <div class="w-2.5 h-2.5 rounded-full bg-red-600 border border-white shrink-0"></div>
-                        <span class="text-slate-700 dark:text-slate-300 text-[10px]">Anak Krakatau</span>
+                    <div class="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+                        <span class="w-3 h-1 bg-blue-600 inline-block rounded"></span> Lintasan Bom (Drag+Angin)
                     </div>
-                    <div class="flex items-center gap-1.5">
-                        <div class="w-3 h-1 bg-orange-500 rounded shrink-0"></div>
-                        <span class="text-slate-700 dark:text-slate-300 text-[10px]">Lintasan Bom (Drag+Angin)</span>
+                    <div class="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+                        <span class="w-3 h-0.5 bg-cyan-500 border-b border-dashed border-cyan-500 inline-block"></span> Lintasan Vacuum Ideal
                     </div>
-                    <div class="flex items-center gap-1.5">
-                        <div class="w-3 h-1 bg-cyan-500 border border-dashed rounded shrink-0"></div>
-                        <span class="text-slate-700 dark:text-slate-300 text-[10px]">Lintasan Ideal Vacuum</span>
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                        <div class="w-3 h-2 bg-purple-500/40 border border-purple-500 rounded shrink-0"></div>
-                        <span class="text-slate-700 dark:text-slate-300 text-[10px]">Sebaran Abu (Isopach)</span>
-                    </div>
-                    <div id="legendSimB" class="hidden flex items-center gap-1.5 pt-0.5 border-t border-slate-200 dark:border-slate-800">
-                        <div class="w-3 h-1 bg-amber-500 rounded shrink-0"></div>
-                        <span class="text-slate-700 dark:text-slate-300 text-[10px]">Simulasi B</span>
+                    <div class="flex items-center gap-2 text-slate-600 dark:text-slate-300">
+                        <span class="w-3 h-3 rounded-full bg-slate-500/70 border border-slate-600 inline-block"></span> Sebaran Abu (Isopach)
                     </div>
                 </div>
             </div>
 
-            <!-- Tab 2: Telemetry Charts -->
-            <div id="tabContentCharts" class="flex-1 p-3 sm:p-5 overflow-y-auto custom-scrollbar hidden space-y-4">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 max-w-6xl mx-auto">
-                    
-                    <!-- Altitude vs Distance Chart -->
-                    <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md">
-                        <h3 class="text-xs font-bold text-slate-800 dark:text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
-                            <i data-lucide="trending-up" class="w-4 h-4 text-orange-500"></i> Ketinggian (z) vs Jarak Horizontal (R)
-                        </h3>
-                        <div class="h-60 relative">
-                            <canvas id="chartAltitudeDistance"></canvas>
+            <div id="tabContentCharts" class="flex-1 p-4 overflow-y-auto hidden space-y-4">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <h3 class="font-bold text-sm text-slate-700 dark:text-slate-200 mb-3">Profil Ketinggian vs Jarak (m)</h3>
+                        <div class="h-64">
+                            <canvas id="chartTrajectory"></canvas>
                         </div>
                     </div>
-
-                    <!-- Velocity Breakdown Chart -->
-                    <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md">
-                        <h3 class="text-xs font-bold text-slate-800 dark:text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
-                            <i data-lucide="gauge" class="w-4 h-4 text-cyan-500"></i> Komponen Kecepatan vs Waktu
-                        </h3>
-                        <div class="h-60 relative">
-                            <canvas id="chartVelocityTime"></canvas>
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm">
+                        <h3 class="font-bold text-sm text-slate-700 dark:text-slate-200 mb-3">Profil Kecepatan vs Waktu (m/s)</h3>
+                        <div class="h-64">
+                            <canvas id="chartVelocity"></canvas>
                         </div>
                     </div>
-
-                    <!-- Comparison Table -->
-                    <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md lg:col-span-2">
-                        <h3 class="text-xs font-bold text-slate-800 dark:text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
-                            <i data-lucide="table" class="w-4 h-4 text-amber-500"></i> Perbandingan Komparatif Material Erupsi
-                        </h3>
-                        <div class="overflow-x-auto custom-scrollbar">
-                            <table class="w-full text-xs text-left text-slate-700 dark:text-slate-300 min-w-[500px]">
-                                <thead class="text-[10px] text-slate-500 dark:text-slate-400 uppercase bg-slate-100 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-700">
-                                    <tr>
-                                        <th class="p-2.5">Parameter / Metrik</th>
-                                        <th class="p-2.5 text-orange-600 dark:text-orange-400">Bom Vulkanik</th>
-                                        <th class="p-2.5 text-purple-600 dark:text-purple-400">Abu Vulkanik (Stokes)</th>
-                                        <th class="p-2.5 text-cyan-600 dark:text-cyan-400">Model Vacuum Ideal</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tableMetricsBody" class="divide-y divide-slate-200 dark:divide-slate-800">
-                                    <!-- Dynamic rows from JS -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
                 </div>
             </div>
 
-            <!-- Tab 3: 3D Isometric Viewport -->
-            <div id="tabContent3D" class="flex-1 p-3 sm:p-5 hidden flex flex-col items-center justify-center relative bg-slate-100 dark:bg-slate-950 w-full h-full overflow-hidden">
-                <div class="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 p-3 rounded-2xl text-xs space-y-1 text-slate-700 dark:text-slate-300 z-10 max-w-xs pointer-events-none shadow-md">
-                    <span class="font-bold text-orange-600 dark:text-orange-400 block flex items-center gap-1.5">
-                        <i data-lucide="box" class="w-4 h-4"></i> Visualisasi 3D Trajektori
-                    </span>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Geser atau usap layar untuk memutar sudut pandang kamera 3D.</p>
-                </div>
-                
-                <canvas id="canvas3D" style="touch-action: none;" class="w-full h-full max-h-[600px] border border-slate-300 dark:border-slate-800 rounded-2xl bg-white dark:bg-slate-900 shadow-xl cursor-grab active:cursor-grabbing"></canvas>
-            </div>
-
-            <!-- Tab 4: AI Insights -->
-            <div id="tabContentAI" class="flex-1 p-4 sm:p-6 overflow-y-auto custom-scrollbar hidden space-y-6">
-                <div class="max-w-4xl mx-auto space-y-6">
-                    <!-- AI Header & Control Actions -->
-                    <div class="bg-gradient-to-r from-purple-100 via-white to-indigo-100 dark:from-purple-900/40 dark:via-slate-900 dark:to-indigo-900/40 border border-purple-200 dark:border-purple-500/30 rounded-2xl p-5 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                        <div class="space-y-1">
-                            <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                                <i data-lucide="sparkles" class="w-5 h-5 text-amber-500"></i>
-                                Analisis Volkanologi & Fisika AI Gemini
-                            </h2>
-                            <p class="text-xs text-purple-900 dark:text-purple-200/80">
-                                Evaluasi bahaya letusan, dampak aerodinamis drag, audio briefing (TTS), dan visualisasi gambar erupsi AI.
-                            </p>
-                        </div>
-                        <div class="flex flex-wrap items-center gap-2 w-full md:w-auto">
-                            <button onclick="generateAIAnalysis()" id="btnGenerateAI" class="flex-1 md:flex-none px-3.5 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs font-bold rounded-xl shadow transition flex items-center justify-center gap-1.5">
-                                <i data-lucide="file-text" class="w-4 h-4"></i> Buat Laporan AI
-                            </button>
-                            <button onclick="generateAIAudioBriefing()" id="btnGenerateTTS" class="flex-1 md:flex-none px-3.5 py-2.5 bg-slate-800 hover:bg-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 text-white text-xs font-bold rounded-xl shadow transition flex items-center justify-center gap-1.5">
-                                <i data-lucide="volume-2" class="w-4 h-4 text-cyan-400"></i> Voice Briefing
-                            </button>
-                            <button onclick="generateAIEruptionImage()" id="btnGenerateImage" class="flex-1 md:flex-none px-3.5 py-2.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white text-xs font-bold rounded-xl shadow transition flex items-center justify-center gap-1.5">
-                                <i data-lucide="image" class="w-4 h-4 text-yellow-200"></i> Visualisasi Gambar
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- AI Generated Image Display Container -->
-                    <div id="aiImageContainer" class="hidden bg-white dark:bg-slate-900 border border-amber-300 dark:border-amber-500/40 rounded-2xl p-4 shadow-md overflow-hidden relative">
-                        <div class="flex items-center justify-between mb-3">
-                            <span class="text-xs font-bold text-amber-700 dark:text-amber-400 flex items-center gap-1.5">
-                                <i data-lucide="camera" class="w-4 h-4"></i> Visualisasi Rekonstruksi Erupsi AI (Gemini 3.1 Flash Image)
-                            </span>
-                            <button onclick="document.getElementById('aiImageContainer').classList.add('hidden')" class="text-slate-400 hover:text-slate-700 dark:hover:text-slate-200">
-                                <i data-lucide="x" class="w-4 h-4"></i>
-                            </button>
-                        </div>
-                        <div id="aiImageLoading" class="h-64 flex flex-col items-center justify-center space-y-2 bg-slate-100 dark:bg-slate-950 rounded-xl">
-                            <i data-lucide="loader-2" class="w-8 h-8 text-amber-500 animate-spin"></i>
-                            <span class="text-xs text-amber-800 dark:text-amber-300 font-semibold">Menggenerasi render lanskap erupsi Selat Sunda...</span>
-                        </div>
-                        <img id="aiEruptionImg" src="" alt="Visualisasi Erupsi AI" class="hidden w-full h-auto max-h-[420px] object-cover rounded-xl border border-slate-200 dark:border-slate-800 shadow-lg">
-                    </div>
-
-                    <!-- Audio Player Bar -->
-                    <div id="aiAudioPlayerContainer" class="hidden bg-slate-900 text-white p-3.5 rounded-2xl shadow-lg border border-cyan-500/30 flex flex-col sm:flex-row items-center justify-between gap-3">
-                        <div class="flex items-center gap-3">
-                            <div class="p-2 bg-cyan-500/20 text-cyan-400 rounded-xl">
-                                <i data-lucide="radio" class="w-5 h-5 animate-pulse"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-xs font-bold text-cyan-300">Audio Briefing Volkanologi TTS</h4>
-                                <p class="text-[10px] text-slate-400">Narasi Suara AI Gemini 2.5 Flash Speech</p>
-                            </div>
-                        </div>
-                        <audio id="aiAudioElement" controls class="w-full sm:w-64 h-8 accent-cyan-500"></audio>
-                    </div>
-
-                    <!-- AI Written Analysis Report -->
-                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-md relative min-h-[220px]">
-                        <div id="aiAnalysisLoading" class="hidden absolute inset-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center space-y-3 z-10">
-                            <i data-lucide="loader-2" class="w-8 h-8 text-purple-600 dark:text-purple-400 animate-spin"></i>
-                            <span class="text-xs font-semibold text-purple-800 dark:text-purple-300">Menganalisis lintasan fisika & dampak geografis...</span>
-                        </div>
-                        <div id="aiAnalysisContent" class="prose prose-slate dark:prose-invert max-w-none text-xs leading-relaxed text-slate-700 dark:text-slate-300 space-y-3">
-                            <p class="text-slate-500 dark:text-slate-400 italic">Klik tombol <strong>"Buat Laporan AI"</strong> di atas untuk memproses data parameter simulasi saat ini menggunakan Gemini AI.</p>
-                        </div>
-                    </div>
-
-                    <!-- Interactive Q&A Chat Section -->
-                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-md space-y-4">
-                        <div class="border-b border-slate-200 dark:border-slate-800 pb-3 flex items-center justify-between">
-                            <h3 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
-                                <i data-lucide="messages-square" class="w-4 h-4 text-indigo-500"></i>
-                                Tanya Jawab Volkanologi & Fisika dengan Dr. Krakatau AI
-                            </h3>
-                            <span class="text-[10px] bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full font-semibold">Gemini 3 Flash</span>
-                        </div>
-
-                        <!-- Chat Message Log -->
-                        <div id="chatMessageLog" class="h-64 overflow-y-auto custom-scrollbar p-3 bg-slate-50 dark:bg-slate-950 rounded-xl space-y-3 text-xs border border-slate-200 dark:border-slate-800">
-                            <div class="flex gap-2.5 items-start">
-                                <div class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0">AI</div>
-                                <div class="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 shadow-sm max-w-[85%]">
-                                    Halo! Saya Dr. Krakatau AI. Anda bisa bertanya tentang persamaan mekanika, hukum drag aerodinamis, sebaran abu Stokes, maupun sejarah erupsi Krakatau!
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Prompt Suggestion Chips -->
-                        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
-                            <button onclick="sendQuickChatPrompt('Mengapa gaya hambat udara (drag) mengurangi jangkauan proyektil secara signifikan?')" class="text-[10px] px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 shrink-0 whitespace-nowrap transition">
-                                💡 Mengapa Drag Mengurangi Jarak?
-                            </button>
-                            <button onclick="sendQuickChatPrompt('Bagaimana Kecepatan Jatuh Stokes memengaruhi jarak drift abu vulkanik?')" class="text-[10px] px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 shrink-0 whitespace-nowrap transition">
-                                ☁️ Efek Stokes & Drift Abu
-                            </button>
-                            <button onclick="sendQuickChatPrompt('Sebutkan sejarah singkat letusan dahsyat Krakatau tahun 1883 dan dampaknya di Selat Sunda.')" class="text-[10px] px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-700 shrink-0 whitespace-nowrap transition">
-                                🌋 Sejarah Erupsi Krakatau 1883
-                            </button>
-                        </div>
-
-                        <!-- Chat Input Box -->
-                        <form onsubmit="handleChatSubmit(event)" class="flex gap-2">
-                            <input type="text" id="chatInputText" placeholder="Ketik pertanyaan fisika atau volkanologi..." class="flex-1 bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-800 dark:text-white focus:outline-none focus:border-indigo-500 font-medium">
-                            <button type="submit" id="btnSendChat" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition flex items-center gap-1 shrink-0">
-                                <i data-lucide="send" class="w-3.5 h-3.5"></i> Kirim
-                            </button>
-                        </form>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Tab 5: Physics Experiments Presets -->
-            <div id="tabContentScenarios" class="flex-1 p-4 sm:p-6 overflow-y-auto custom-scrollbar hidden space-y-6">
-                <div class="max-w-4xl mx-auto space-y-6">
-                    <div class="border-b border-slate-200 dark:border-slate-800 pb-4">
-                        <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                            <i data-lucide="beaker" class="w-5 h-5 text-orange-500"></i>
-                            Skenario Eksperimen Mandiri Fisika Letusan
-                        </h2>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                            Pilih salah satu skenario preset untuk mengamati Hukum II Newton & gaya hambat udara.
-                        </p>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl hover:border-orange-500/50 transition shadow-sm">
-                            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1">Pengaruh Kecepatan Awal (v₀)</h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Meningkatkan energi lontaran awal proyektil (v₀ = 280 m/s).</p>
-                            <button onclick="applyPreset('speed')" class="w-full py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs rounded-xl border border-slate-300 dark:border-slate-700 transition flex items-center justify-center gap-1.5">
-                                <i data-lucide="play" class="w-3.5 h-3.5 text-orange-500"></i> Jalankan Eksperimen
-                            </button>
-                        </div>
-
-                        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl hover:border-amber-500/50 transition shadow-sm">
-                            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1">Sudut Elevasi Optimal (θ)</h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Menguji lontaran vertikal tinggi vs jangkauan (θ = 75°).</p>
-                            <button onclick="applyPreset('angle')" class="w-full py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs rounded-xl border border-slate-300 dark:border-slate-700 transition flex items-center justify-center gap-1.5">
-                                <i data-lucide="play" class="w-3.5 h-3.5 text-amber-500"></i> Jalankan Eksperimen
-                            </button>
-                        </div>
-
-                        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl hover:border-cyan-500/50 transition shadow-sm">
-                            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1">Pengaruh Massa & Drag (m)</h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Membandingkan batuan pejal berat vs ringan (m = 50 kg).</p>
-                            <button onclick="applyPreset('mass')" class="w-full py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs rounded-xl border border-slate-300 dark:border-slate-700 transition flex items-center justify-center gap-1.5">
-                                <i data-lucide="play" class="w-3.5 h-3.5 text-cyan-500"></i> Jalankan Eksperimen
-                            </button>
-                        </div>
-
-                        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl hover:border-emerald-500/50 transition shadow-sm">
-                            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-200 mb-1">Dampak Angin Muson Kencang</h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">Menguji pengaruh angin kencang (30 m/s ke Banten/Timur).</p>
-                            <button onclick="applyPreset('wind')" class="w-full py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs rounded-xl border border-slate-300 dark:border-slate-700 transition flex items-center justify-center gap-1.5">
-                                <i data-lucide="play" class="w-3.5 h-3.5 text-emerald-500"></i> Jalankan Eksperimen
-                            </button>
-                        </div>
-                    </div>
+            <div id="tabContent3D" class="flex-1 relative hidden bg-slate-950">
+                <canvas id="canvas3d" class="w-full h-full block cursor-grab active:cursor-grabbing"></canvas>
+                <div class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur border border-slate-700 rounded-lg p-2.5 text-xs text-slate-300 pointer-events-none">
+                    <span class="font-bold text-white block">Visualisasi Isometric 3D</span>
+                    <span class="text-[11px] text-slate-400">Geser tetikus untuk memutar pandangan kamera 3D</span>
                 </div>
             </div>
 
         </main>
     </div>
 
-    <!-- Theory Modal -->
-    <div id="theoryModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[3000] hidden flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
-            <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                <h3 class="font-bold text-sm sm:text-base text-slate-900 dark:text-white flex items-center gap-2">
-                    <i data-lucide="book-open" class="w-5 h-5 text-orange-500"></i>
-                    Dasar Teori Fisika Letusan & Formulasi Matematika
-                </h3>
-                <button onclick="closeModal('theoryModal')" class="p-1 text-slate-400 hover:text-slate-800 dark:hover:text-white rounded-lg">
+    <div id="compareModal" class="fixed inset-0 z-[3000] bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-3xl w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4 max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3">
+                <div class="flex items-center gap-2 text-amber-600 dark:text-amber-400">
+                    <i data-lucide="git-compare" class="w-5 h-5"></i>
+                    <h3 class="font-bold text-base text-slate-900 dark:text-white">Mode Komparasi Simulasi (Skenario A vs B)</h3>
+                </div>
+                <button onclick="closeCompareModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
-            <div class="p-5 overflow-y-auto custom-scrollbar space-y-4 text-xs text-slate-700 dark:text-slate-300">
-                <div class="space-y-1">
-                    <h4 class="font-bold text-orange-600 dark:text-orange-400">1. Komponen Kecepatan Awal</h4>
-                    <p class="text-slate-500 dark:text-slate-400">Kecepatan awal v₀ diuraikan ke dalam sumbu vertikal dan azimuth horizontal:</p>
-                    <div class="bg-slate-100 dark:bg-slate-950 p-2.5 rounded-xl font-mono text-amber-800 dark:text-amber-300 border border-slate-200 dark:border-slate-800">
-                        v₀z = v₀ · sin(θ)<br>
-                        v₀h = v₀ · cos(θ)<br>
-                        v₀x = v₀h · sin(φ) (Timur)<br>
-                        v₀y = v₀h · cos(φ) (Utara)
+
+            <div class="space-y-4 overflow-y-auto flex-1 pr-1 text-xs">
+                <div class="grid grid-cols-2 gap-3">
+                    <button onclick="saveCurrentAsSimA()" class="p-3 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-xl hover:bg-blue-100 transition text-left cursor-pointer">
+                        <span class="font-bold text-blue-700 dark:text-blue-300 block mb-1">Simpan Parameter Saat Ini sebagai SIMULASI A 🔵</span>
+                        <span class="text-[11px] text-slate-500 dark:text-slate-400 block" id="label_simA_status">Belum disimpan</span>
+                    </button>
+                    <button onclick="saveCurrentAsSimB()" class="p-3 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700 rounded-xl hover:bg-amber-100 transition text-left cursor-pointer">
+                        <span class="font-bold text-amber-700 dark:text-amber-300 block mb-1">Simpan Parameter Saat Ini sebagai SIMULASI B 🟠</span>
+                        <span class="text-[11px] text-slate-500 dark:text-slate-400 block" id="label_simB_status">Belum disimpan</span>
+                    </button>
+                </div>
+
+                <div class="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100 dark:bg-slate-700/60 font-bold text-slate-700 dark:text-slate-200 border-b border-slate-200 dark:border-slate-700">
+                                <th class="p-2.5">Parameter / Telemetri</th>
+                                <th class="p-2.5 text-blue-600 dark:text-blue-400">Simulasi A (Biru)</th>
+                                <th class="p-2.5 text-amber-600 dark:text-amber-400">Simulasi B (Oranye)</th>
+                                <th class="p-2.5 text-slate-500">Selisih (Δ)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="compareTableBody" class="divide-y divide-slate-200 dark:divide-slate-700 text-slate-600 dark:text-slate-300">
+                            <tr>
+                                <td colspan="4" class="p-4 text-center italic text-slate-400">Klik tombol di atas untuk mengunci Simulasi A dan Simulasi B...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="pt-2 flex gap-2 border-t border-slate-200 dark:border-slate-700">
+                <button onclick="renderDualComparisonOnMap()" class="flex-1 py-2.5 px-4 bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center justify-center gap-2 cursor-pointer">
+                    <i data-lucide="map-pin" class="w-4 h-4"></i> Tampilkan Kedua Trajektori di Peta
+                </button>
+                <button onclick="clearComparison()" class="py-2.5 px-4 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-xl hover:bg-slate-300 transition cursor-pointer">
+                    Reset
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="theoryModal" class="fixed inset-0 z-[3000] bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4 max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-3">
+                <div class="flex items-center gap-2 text-red-600 dark:text-red-400">
+                    <i data-lucide="book-open" class="w-5 h-5"></i>
+                    <h3 class="font-bold text-base text-slate-900 dark:text-white">Landasan Teori Fisika Erupsi Krakatau</h3>
+                </div>
+                <button onclick="closeTheoryModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4 overflow-y-auto flex-1 pr-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                <div class="bg-red-50 dark:bg-slate-700/50 p-3.5 rounded-xl border border-red-100 dark:border-slate-600">
+                    <h4 class="font-bold text-red-900 dark:text-red-300 text-sm mb-1">1. Kinematika Gerak Proyektil 2D & 3D</h4>
+                    <p>Kecepatan awal v₀ diuraikan menjadi komponen vertikal dan horizontal berdasarkan sudut elevasi (θ) dan azimuth (φ):</p>
+                    <div class="bg-white dark:bg-slate-800 p-2 my-2 rounded font-mono text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+                        v_0z = v_0 · sin(θ)<br>
+                        v_0h = v_0 · cos(θ)<br>
+                        v_0x = v_0h · sin(φ)   (Timur-Barat)<br>
+                        v_0y = v_0h · cos(φ)   (Utara-Selatan)
                     </div>
                 </div>
-                <div class="space-y-1">
-                    <h4 class="font-bold text-cyan-600 dark:text-cyan-400">2. Gaya Drag Aerodinamis Kuadratik</h4>
-                    <div class="bg-slate-100 dark:bg-slate-950 p-2.5 rounded-xl font-mono text-cyan-800 dark:text-cyan-300 border border-slate-200 dark:border-slate-800">
-                        F_D = 0.5 · ρ · C_D · A · v_rel²<br>
-                        v_rel = v_partikel - v_angin
+
+                <div class="bg-orange-50 dark:bg-slate-700/50 p-3.5 rounded-xl border border-orange-100 dark:border-slate-600">
+                    <h4 class="font-bold text-orange-900 dark:text-orange-300 text-sm mb-1">2. Gaya Hambatan Udara (Aerodynamic Drag)</h4>
+                    <p>Gaya drag Kuadratik bekerja berlawanan arah dengan kecepatan relatif partikel terhadap angin (v_rel = v_partikel - v_angin):</p>
+                    <div class="bg-white dark:bg-slate-800 p-2 my-2 rounded font-mono text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+                        F_D = 0.5 · ρ · C_D · A · v_rel²
                     </div>
                 </div>
-                <div class="space-y-1">
-                    <h4 class="font-bold text-purple-600 dark:text-purple-400">3. Endapan Abu Vulkanik (Stokes Fall Law)</h4>
-                    <div class="bg-slate-100 dark:bg-slate-950 p-2.5 rounded-xl font-mono text-purple-800 dark:text-purple-300 border border-slate-200 dark:border-slate-800">
-                        v_s = (ρ_p - ρ_air) · g · d² / (18 · μ)
+
+                <div class="bg-amber-50 dark:bg-slate-700/50 p-3.5 rounded-xl border border-amber-100 dark:border-slate-600">
+                    <h4 class="font-bold text-amber-900 dark:text-amber-300 text-sm mb-1">3. Hukum Pengendapan Stokes (Abu Vulkanik)</h4>
+                    <p>Kecepatan terminal jatuh abu mikro dihitung menggunakan Hukum Stokes dengan viskositas udara (μ):</p>
+                    <div class="bg-white dark:bg-slate-800 p-2 my-2 rounded font-mono text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700">
+                        v_s = (ρ_ash · g · d_ash²) / (18 · μ)
                     </div>
+                </div>
+
+                <div class="bg-yellow-50 dark:bg-slate-700/50 p-3.5 rounded-xl border border-yellow-100 dark:border-slate-600">
+                    <h4 class="font-bold text-yellow-900 dark:text-yellow-300 text-sm mb-1">4. Integrasi Numerik Euler Time-Stepping</h4>
+                    <p>Percepatan total a = F_net / m diintegrasikan secara time-stepping Δt = 0.01 s hingga partikel mendarat di z = 0 m.</p>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Global State Variables
+        const KRAKATAU_LAT = -6.102;
+        const KRAKATAU_LON = 105.423;
+
+        window.simParams = {
+            v0: 180,
+            theta: 45,
+            phi: 60,
+            m: 10.0,
+            Cd: 0.50,
+            A: 0.020,
+            dash: 0.100,
+            vw: 12,
+            phiw: 225,
+            materialType: 'combined'
+        };
+
         let map = null;
-        let isDarkMode = false; // Default Light Mode
+        let isDarkMode = false;
+        let activeTab = 'map';
+
+        let savedSimA = null;
+        let savedSimB = null;
+        let simResults = null;
+
+        let chartTrajectory = null;
+        let chartVelocity = null;
+
+        let isDragging3D = false;
+        let lastMouseX = 0;
+        let lastMouseY = 0;
+        let rotX = 0.6;
+        let rotY = 0.4;
 
         let mapLayers = {
             trajA: null,
             trajB: null,
             idealA: null,
             ashPolyA: null,
-            ashPolyB: null,
+            ashGroup: [],
+            ashGroupB: [],
             impactMarkerA: null,
             impactMarkerB: null,
-            krakatauMarker: null
+            krakatauMarker: null,
+            animMarkerA: null,
+            blastMarker: null,
+            ashAnimFrameId: null
         };
 
-        let chartAlt = null;
-        let chartVel = null;
+        let animFrameId = null;
 
-        let isCompareMode = false;
-        let activeSimTarget = 'A'; // 'A' or 'B'
-
-        let isDragging3D = false;
-        let lastMouseX = 0;
-        let lastMouseY = 0;
-        let angleX = 0.5;
-        let angleY = 0.3;
-
-        let isMobileControlsOpen = false;
-
-        const KRAKATAU_LAT = -6.102;
-        const KRAKATAU_LON = 105.423;
-
-        let simParams = {
-            A: {
-                materialType: 'combined',
-                v0: 180,
-                theta: 45,
-                phi: 60,
-                m: 10.0,
-                Cd: 0.50,
-                A: 0.020,
-                ashSize: 0.25,
-                vw: 12,
-                phiw: 240,
-                rho: 1.225,
-                g: 9.81,
-                z0: 155
-            },
-            B: {
-                materialType: 'combined',
-                v0: 180,
-                theta: 45,
-                phi: 60,
-                m: 10.0,
-                Cd: 0.50,
-                A: 0.020,
-                ashSize: 0.25,
-                vw: 25,
-                phiw: 90,
-                rho: 1.225,
-                g: 9.81,
-                z0: 155
-            }
+        window.getCompassBearing = function(deg) {
+            const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+            const index = Math.round(((deg % 360) + 360) % 360 / 45) % 8;
+            return directions[index];
         };
 
-        let simResults = {
-            A: null,
-            B: null
+        window.openCompareModal = function() {
+            const modal = document.getElementById('compareModal');
+            if (modal) modal.classList.remove('hidden');
         };
 
-        // Theme Toggle Function
-        function toggleTheme() {
+        window.closeCompareModal = function() {
+            const modal = document.getElementById('compareModal');
+            if (modal) modal.classList.add('hidden');
+        };
+
+        window.openTheoryModal = function() {
+            const modal = document.getElementById('theoryModal');
+            if (modal) modal.classList.remove('hidden');
+        };
+
+        window.closeTheoryModal = function() {
+            const modal = document.getElementById('theoryModal');
+            if (modal) modal.classList.add('hidden');
+        };
+
+        window.toggleTheme = function() {
             isDarkMode = !isDarkMode;
-            const htmlTag = document.getElementById('htmlTag');
-            const mapContainer = document.getElementById('map');
-            const themeText = document.getElementById('themeText');
+            const html = document.documentElement;
             const themeIcon = document.getElementById('themeIcon');
 
             if (isDarkMode) {
-                htmlTag?.classList.add('dark');
-                mapContainer?.classList.add('dark-tiles');
-                if (themeText) themeText.innerText = 'Mode Gelap';
+                html.classList.add('dark');
+                html.classList.remove('light');
                 if (themeIcon) themeIcon.setAttribute('data-lucide', 'moon');
             } else {
-                htmlTag?.classList.remove('dark');
-                mapContainer?.classList.remove('dark-tiles');
-                if (themeText) themeText.innerText = 'Mode Terang';
+                html.classList.remove('dark');
+                html.classList.add('light');
                 if (themeIcon) themeIcon.setAttribute('data-lucide', 'sun');
             }
+            if (typeof lucide !== 'undefined' && lucide.createIcons) lucide.createIcons();
+            if (activeTab === '3d') render3D();
+            
+            if (simResults) {
+                renderMapTrajectories(false);
+            }
+        };
 
-            try { if (window.lucide) lucide.createIcons(); } catch (e) {}
+        window.toggleMobileControls = function() {
+            const sidebar = document.getElementById('controlSidebar');
+            if (sidebar) {
+                sidebar.classList.toggle('hidden');
+            }
+        };
 
-            // Refresh Chart and 3D Canvas colors
-            if (chartAlt && chartVel) {
-                const textColor = isDarkMode ? '#94a3b8' : '#475569';
-                const gridColor = isDarkMode ? '#1e293b' : '#e2e8f0';
+        window.switchTab = function(tab) {
+            activeTab = tab;
+            const btnMap = document.getElementById('tabBtnMap');
+            const btnCharts = document.getElementById('tabBtnCharts');
+            const btn3D = document.getElementById('tabBtn3D');
 
-                [chartAlt, chartVel].forEach(chart => {
-                    if (chart.options.scales.x) {
-                        chart.options.scales.x.ticks.color = textColor;
-                        chart.options.scales.x.grid.color = gridColor;
-                        chart.options.scales.x.title.color = textColor;
-                    }
-                    if (chart.options.scales.y) {
-                        chart.options.scales.y.ticks.color = textColor;
-                        chart.options.scales.y.grid.color = gridColor;
-                        chart.options.scales.y.title.color = textColor;
-                    }
-                    if (chart.options.plugins?.legend?.labels) {
-                        chart.options.plugins.legend.labels.color = isDarkMode ? '#f3f4f6' : '#1e293b';
-                    }
-                    chart.update();
-                });
+            const tabMap = document.getElementById('tabContentMap');
+            const tabCharts = document.getElementById('tabContentCharts');
+            const tab3D = document.getElementById('tabContent3D');
+
+            [btnMap, btnCharts, btn3D].forEach(btn => {
+                if (btn) {
+                    btn.classList.remove('border-blue-600', 'text-blue-600', 'dark:text-blue-400');
+                    btn.classList.add('border-transparent', 'text-slate-500');
+                }
+            });
+
+            if (tabMap) tabMap.classList.add('hidden');
+            if (tabCharts) tabCharts.classList.add('hidden');
+            if (tab3D) tab3D.classList.add('hidden');
+
+            if (tab === 'map') {
+                if (btnMap) btnMap.classList.add('border-blue-600', 'text-blue-600', 'dark:text-blue-400');
+                if (tabMap) tabMap.classList.remove('hidden');
+                if (map) map.invalidateSize();
+            } else if (tab === 'charts') {
+                if (btnCharts) btnCharts.classList.add('border-blue-600', 'text-blue-600', 'dark:text-blue-400');
+                if (tabCharts) tabCharts.classList.remove('hidden');
+            } else if (tab === '3d') {
+                if (btn3D) btn3D.classList.add('border-blue-600', 'text-blue-600', 'dark:text-blue-400');
+                if (tab3D) tab3D.classList.remove('hidden');
+                render3D();
+            }
+        };
+
+        window.onMaterialChange = function() {
+            const material = document.getElementById('simMaterial').value;
+            window.simParams.materialType = material;
+
+            if (material === 'bomb') {
+                window.simParams.m = 25.0;
+                window.simParams.Cd = 0.65;
+                window.simParams.A = 0.050;
+            } else if (material === 'fine_ash') {
+                window.simParams.dash = 0.005;
+                window.simParams.m = 0.1;
+                window.simParams.A = 0.001;
+            } else if (material === 'coarse_ash') {
+                window.simParams.dash = 2.000;
+                window.simParams.m = 0.5;
+                window.simParams.A = 0.005;
+            } else {
+                window.simParams.m = 10.0;
+                window.simParams.Cd = 0.50;
+                window.simParams.A = 0.020;
+                window.simParams.dash = 0.100;
             }
 
-            render3DCanvas();
-        }
+            document.getElementById('param_m').value = window.simParams.m;
+            document.getElementById('param_Cd').value = window.simParams.Cd;
+            document.getElementById('param_A').value = window.simParams.A;
+            document.getElementById('param_dash').value = window.simParams.dash;
 
-        // Core Physics Integration Engine (Euler-Cromer Sub-Stepping)
-        function calculateTrajectory(p) {
-            const dt = 0.005; // 5ms sub-stepping interval
-            const g = parseFloat(p.g);
-            const rho = parseFloat(p.rho);
-            const m = parseFloat(p.m);
-            const Cd = parseFloat(p.Cd);
-            const A = parseFloat(p.A);
-            const v0 = parseFloat(p.v0);
-            const thetaRad = parseFloat(p.theta) * Math.PI / 180;
-            const phiRad = parseFloat(p.phi) * Math.PI / 180;
-            const phiwRad = parseFloat(p.phiw) * Math.PI / 180;
-            const vw = parseFloat(p.vw);
-            const z0 = parseFloat(p.z0);
+            runSimulation();
+        };
 
-            // Initial Velocities
-            const v0h = v0 * Math.cos(thetaRad);
-            let vx = v0h * Math.sin(phiRad); // East
-            let vy = v0h * Math.cos(phiRad); // North
-            let vz = v0 * Math.sin(thetaRad); // Up
+        window.runSimulation = function() {
+            window.simParams.v0 = parseFloat(document.getElementById('param_v0').value) || 180;
+            window.simParams.theta = parseFloat(document.getElementById('param_theta').value) || 45;
+            window.simParams.phi = parseFloat(document.getElementById('param_phi').value) || 60;
+            window.simParams.m = parseFloat(document.getElementById('param_m').value) || 10;
+            window.simParams.Cd = parseFloat(document.getElementById('param_Cd').value) || 0.5;
+            window.simParams.A = parseFloat(document.getElementById('param_A').value) || 0.02;
+            window.simParams.dash = parseFloat(document.getElementById('param_dash').value) || 0.1;
+            window.simParams.vw = parseFloat(document.getElementById('param_vw').value) || 12;
+            window.simParams.phiw = parseFloat(document.getElementById('param_phiw').value) || 225;
 
-            // Wind Velocities
-            const wx = vw * Math.sin(phiwRad);
-            const wy = vw * Math.cos(phiwRad);
+            document.getElementById('val_v0').innerText = `${window.simParams.v0} m/s`;
+            document.getElementById('val_theta').innerText = `${window.simParams.theta}°`;
+            document.getElementById('val_phi').innerText = `${window.simParams.phi}° (${getCompassBearing(window.simParams.phi)})`;
+            document.getElementById('val_m').innerText = `${window.simParams.m.toFixed(1)} kg`;
+            document.getElementById('val_Cd').innerText = window.simParams.Cd.toFixed(2);
+            document.getElementById('val_A').innerText = `${window.simParams.A.toFixed(3)} m²`;
+            document.getElementById('val_dash').innerText = `${window.simParams.dash.toFixed(3)} mm`;
+            document.getElementById('val_vw').innerText = `${window.simParams.vw} m/s`;
+            document.getElementById('val_phiw').innerText = `${window.simParams.phiw}° (${getCompassBearing(window.simParams.phiw)})`;
 
-            let x = 0, y = 0, z = z0;
+            simResults = computePhysicsTrajectory(window.simParams);
+
+            document.getElementById('stat_range').innerText = `${(simResults.horizDist / 1000).toFixed(2)} km`;
+            document.getElementById('stat_ideal_range').innerText = `Ideal: ${(simResults.idealRange / 1000).toFixed(2)} km`;
+
+            document.getElementById('stat_height').innerText = `${simResults.maxHeight.toFixed(0)} m`;
+            document.getElementById('stat_ash_height').innerText = `Kolom Abu: ${(simResults.ash.plumeHeight).toFixed(0)} m`;
+
+            document.getElementById('stat_time').innerText = `${simResults.flightTime.toFixed(1)} s`;
+            document.getElementById('stat_impact_v').innerText = `Jatuh: ${simResults.impactVel.toFixed(1)} m/s`;
+
+            document.getElementById('stat_ash_drift').innerText = `${(simResults.ash.driftDist / 1000).toFixed(1)} km`;
+            document.getElementById('stat_ash_time').innerText = `Settle: ${(simResults.ash.settleTime / 60).toFixed(0)} min`;
+
+            renderMapTrajectories(false);
+            updateCharts(simResults);
+            if (activeTab === '3d') render3D();
+        };
+
+        function computePhysicsTrajectory(p) {
+            const g = 9.81;
+            const rho_air = 1.225;
+            const dt = 0.01;
+
+            const thetaRad = p.theta * Math.PI / 180;
+            const phiRad = p.phi * Math.PI / 180;
+            const phiwRad = p.phiw * Math.PI / 180;
+
+            // Initial Velocity Components
+            const v0z = p.v0 * Math.sin(thetaRad);
+            const v0h = p.v0 * Math.cos(thetaRad);
+            const v0x = v0h * Math.sin(phiRad);
+            const v0y = v0h * Math.cos(phiRad);
+
+            const vwx = p.vw * Math.sin(phiwRad);
+            const vwy = p.vw * Math.cos(phiwRad);
+
+            let x = 0, y = 0, z = 150; 
+            let vx = v0x, vy = v0y, vz = v0z;
             let t = 0;
-            let maxZ = z0;
 
-            const trajPoints = [];
-            let lastRecordedT = -1;
+            let maxHeight = z;
+            const points = [{ x, y, z, vx, vy, vz, t }];
 
-            while (z >= 0 && t < 300) {
-                if (t - lastRecordedT >= 0.1 || t === 0) {
-                    const rHoriz = Math.hypot(x, y);
-                    const speed = Math.hypot(vx, vy, vz);
-                    trajPoints.push({ x, y, z, t, rHoriz, vx, vy, vz, speed });
-                    lastRecordedT = t;
-                }
+            while (z > 0 && t < 300) {
+                const vrelx = vx - vwx;
+                const vrely = vy - vwy;
+                const vrelz = vz;
+                const vrelMag = Math.sqrt(vrelx * vrelx + vrely * vrely + vrelz * vrelz);
 
-                if (z > maxZ) maxZ = z;
+                const Fdrag = 0.5 * rho_air * p.Cd * p.A * (vrelMag * vrelMag);
 
-                // Relative Velocity
-                const vrelX = vx - wx;
-                const vrelY = vy - wy;
-                const vrelZ = vz;
-                const vrel = Math.hypot(vrelX, vrelY, vrelZ);
+                const ax = Math.abs(vrelMag) > 1e-5 ? -(Fdrag * (vrelx / vrelMag)) / p.m : 0;
+                const ay = Math.abs(vrelMag) > 1e-5 ? -(Fdrag * (vrely / vrelMag)) / p.m : 0;
+                const az = -g - (Math.abs(vrelMag) > 1e-5 ? (Fdrag * (vrelz / vrelMag)) / p.m : 0);
 
-                // Drag magnitude
-                const dragConst = 0.5 * rho * Cd * A;
-                const Fdx = -dragConst * vrel * vrelX;
-                const Fdy = -dragConst * vrel * vrelY;
-                const Fdz = -dragConst * vrel * vrelZ;
-
-                // Accelerations
-                const ax = Fdx / m;
-                const ay = Fdy / m;
-                const az = -g + (Fdz / m);
-
-                // Euler-Cromer update
                 vx += ax * dt;
                 vy += ay * dt;
                 vz += az * dt;
@@ -942,911 +728,678 @@
                 z += vz * dt;
 
                 t += dt;
+                if (z > maxHeight) maxHeight = z;
+
+                points.push({ x, y, z, vx, vy, vz, t });
             }
 
-            const horizDist = Math.hypot(x, y);
-            const impactSpeed = Math.hypot(vx, vy, vz);
-            trajPoints.push({ x, y, z: 0, t, rHoriz: horizDist, vx, vy, vz, speed: impactSpeed });
+            const horizDist = Math.sqrt(x * x + y * y);
+            const impactVel = Math.sqrt(vx * vx + vy * vy + vz * vz);
+            const idealRange = (p.v0 * p.v0 * Math.sin(2 * thetaRad)) / g;
 
-            // Ideal Vacuum Trajectory Calculation
-            const vz0 = v0 * Math.sin(thetaRad);
-            const tIdeal = (vz0 + Math.sqrt(vz0 * vz0 + 2 * g * z0)) / g;
-            const rangeIdeal = v0h * tIdeal;
-            const maxZIdeal = z0 + (vz0 * vz0) / (2 * g);
-
-            // Geographic Coordinate Conversion
             const latPerM = 1 / 111139;
             const lonPerM = 1 / (111139 * Math.cos(KRAKATAU_LAT * Math.PI / 180));
+
             const endLat = KRAKATAU_LAT + y * latPerM;
             const endLon = KRAKATAU_LON + x * lonPerM;
-            const finalBearing = (Math.atan2(x, y) * 180 / Math.PI + 360) % 360;
 
-            // Ash Dispersion Stokes Model
-            const ashSizeM = (parseFloat(p.ashSize) || 0.25) * 1e-3;
-            const ashDensity = 2300;
-            const airViscosity = 1.81e-5;
-            const vStokes = ((ashDensity - rho) * g * (ashSizeM * ashSizeM)) / (18 * airViscosity);
-            
-            const plumeHeight = z0 + 0.22 * Math.pow(v0, 1.2);
-            const settleTime = plumeHeight / Math.max(vStokes, 0.01);
-            const driftDist = vw * settleTime;
+            const rho_ash = 2000;
+            const mu_air = 1.8e-5;
+            const d_m = p.dash / 1000;
+            const v_stokes = Math.max(0.015, (rho_ash * g * d_m * d_m) / (18 * mu_air));
+
+            const plumeHeight = Math.min(12000, maxHeight + (p.v0 * 2.5));
+            const settleTime = plumeHeight / v_stokes;
+            const driftDist = p.vw * settleTime;
+
             const ashLat = KRAKATAU_LAT + (driftDist * Math.cos(phiwRad)) * latPerM;
             const ashLon = KRAKATAU_LON + (driftDist * Math.sin(phiwRad)) * lonPerM;
 
             return {
-                points: trajPoints,
+                points,
                 horizDist,
-                maxZ,
+                maxHeight,
                 flightTime: t,
-                impactSpeed,
+                impactVel,
+                idealRange,
                 endLat,
                 endLon,
-                finalBearing,
-                ideal: { range: rangeIdeal, maxZ: maxZIdeal, flightTime: tIdeal },
-                ash: { plumeHeight, vStokes, settleTime, driftDist, ashLat, ashLon }
+                ash: {
+                    plumeHeight,
+                    settleTime,
+                    driftDist,
+                    ashLat,
+                    ashLon
+                }
             };
         }
 
-        // Initialize Map
         function initMap() {
-            const mapContainer = document.getElementById('map');
-            if (!mapContainer) return;
+            try {
+                if (typeof L === 'undefined') return;
+                map = L.map('map', {
+                    center: [KRAKATAU_LAT, KRAKATAU_LON],
+                    zoom: 10,
+                    zoomControl: false
+                });
 
-            if (map) {
-                map.remove();
+                L.control.zoom({ position: 'bottomleft' }).addTo(map);
+
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                    maxZoom: 19,
+                    subdomains: 'abcd',
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                }).addTo(map);
+
+                const iconKrakatau = L.divIcon({
+                    className: 'pulse-marker-container',
+                    html: '<div class="pulse-marker-ring"></div><div class="pulse-marker-inner"></div>',
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12]
+                });
+
+                mapLayers.krakatauMarker = L.marker([KRAKATAU_LAT, KRAKATAU_LON], { icon: iconKrakatau }).addTo(map);
+                mapLayers.krakatauMarker.bindPopup('<b>Gunung Anak Krakatau</b><br>Sumber Erupsi (-6.102, 105.423)');
+
+                setTimeout(() => {
+                    if (map) map.invalidateSize();
+                    runSimulation();
+                }, 100);
+            } catch (err) {
+                console.error("Map initialization failed:", err);
             }
-
-            map = L.map('map', {
-                center: [KRAKATAU_LAT, KRAKATAU_LON],
-                zoom: 11,
-                zoomControl: true
-            });
-
-            // Fast, reliable CartoDB Voyager tiles for crisp light/dark presentation
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                subdomains: 'abcd',
-                maxZoom: 19
-            }).addTo(map);
-
-            // Krakatau Crater Pulsing Marker - Nested element to prevent transform override
-            const craterIcon = L.divIcon({
-                className: 'pulse-marker-container',
-                html: '<div class="pulse-marker-inner"></div>',
-                iconSize: [18, 18],
-                iconAnchor: [9, 9]
-            });
-
-            mapLayers.krakatauMarker = L.marker([KRAKATAU_LAT, KRAKATAU_LON], { icon: craterIcon })
-                .addTo(map)
-                .bindPopup('<b>Anak Krakatau</b><br>Kawah Utama (Ketinggian 155m)');
-
-            setTimeout(() => {
-                if (map) map.invalidateSize();
-            }, 250);
         }
 
-        // Render Polyline Trajectories on Leaflet Map
-        function renderMapTrajectories() {
-            if (!map) return;
+        window.runSimulationAnimation = function() {
+            runSimulation();
+            renderMapTrajectories(true);
+        };
 
-            // Clear previous map layers
-            if (mapLayers.trajA) map.removeLayer(mapLayers.trajA);
-            if (mapLayers.idealA) map.removeLayer(mapLayers.idealA);
-            if (mapLayers.ashPolyA) map.removeLayer(mapLayers.ashPolyA);
-            if (mapLayers.impactMarkerA) map.removeLayer(mapLayers.impactMarkerA);
-            if (mapLayers.trajB) map.removeLayer(mapLayers.trajB);
-            if (mapLayers.ashPolyB) map.removeLayer(mapLayers.ashPolyB);
-            if (mapLayers.impactMarkerB) map.removeLayer(mapLayers.impactMarkerB);
+        function renderMapTrajectories(isAnimated = false) {
+            if (!map || !simResults) return;
+
+            try {
+                map.stop();
+            } catch (e) {}
+
+            if (animFrameId) {
+                cancelAnimationFrame(animFrameId);
+                animFrameId = null;
+            }
+            if (mapLayers.ashAnimFrameId) {
+                cancelAnimationFrame(mapLayers.ashAnimFrameId);
+                mapLayers.ashAnimFrameId = null;
+            }
+
+            if (mapLayers.trajA) { map.removeLayer(mapLayers.trajA); mapLayers.trajA = null; }
+            if (mapLayers.idealA) { map.removeLayer(mapLayers.idealA); mapLayers.idealA = null; }
+            if (mapLayers.impactMarkerA) { map.removeLayer(mapLayers.impactMarkerA); mapLayers.impactMarkerA = null; }
+            if (mapLayers.animMarkerA) { map.removeLayer(mapLayers.animMarkerA); mapLayers.animMarkerA = null; }
+            if (mapLayers.blastMarker) { map.removeLayer(mapLayers.blastMarker); mapLayers.blastMarker = null; }
+            if (mapLayers.ashGroup && mapLayers.ashGroup.length > 0) {
+                mapLayers.ashGroup.forEach(layer => map.removeLayer(layer));
+                mapLayers.ashGroup = [];
+            }
 
             const latPerM = 1 / 111139;
             const lonPerM = 1 / (111139 * Math.cos(KRAKATAU_LAT * Math.PI / 180));
 
-            // Simulation A Render
-            if (simResults.A) {
-                const resA = simResults.A;
-                const matType = simParams.A.materialType || 'combined';
+            const resA = simResults;
+            const showBomb = (window.simParams.materialType === 'combined' || window.simParams.materialType === 'bomb');
+            const showAsh = (window.simParams.materialType === 'combined' || window.simParams.materialType === 'fine_ash' || window.simParams.materialType === 'coarse_ash');
 
-                const showBomb = (matType === 'combined' || matType === 'bomb');
-                const showAsh = (matType === 'combined' || matType === 'fine_ash' || matType === 'coarse_ash');
+            if (isAnimated) {
+                const blastIcon = L.divIcon({
+                    className: 'crater-blast-container',
+                    html: '<div class="crater-blast-inner">💥 BOOM!</div>',
+                    iconSize: [60, 60],
+                    iconAnchor: [30, 30]
+                });
+                mapLayers.blastMarker = L.marker([KRAKATAU_LAT, KRAKATAU_LON], { icon: blastIcon }).addTo(map);
+                setTimeout(() => { if (mapLayers.blastMarker) map.removeLayer(mapLayers.blastMarker); }, 1200);
+            }
 
-                if (showBomb) {
-                    const coordsA = resA.points.map(pt => [
+            if (showAsh) {
+                renderAshPlume(resA, isAnimated);
+            }
+
+            if (showBomb) {
+                const allCoords = resA.points
+                    .map(pt => [
                         KRAKATAU_LAT + pt.y * latPerM,
                         KRAKATAU_LON + pt.x * lonPerM
-                    ]);
+                    ])
+                    .filter(pt => isFinite(pt[0]) && isFinite(pt[1]));
 
-                    mapLayers.trajA = L.polyline(coordsA, { color: '#ea580c', weight: 4, opacity: 0.95 }).addTo(map);
-
-                    // Ideal Vacuum Line
-                    const phiRad = parseFloat(simParams.A.phi) * Math.PI / 180;
+                if (allCoords.length > 0) {
+                    const phiRad = window.simParams.phi * Math.PI / 180;
                     const idealCoords = [
                         [KRAKATAU_LAT, KRAKATAU_LON],
                         [
-                            KRAKATAU_LAT + (resA.ideal.range * Math.cos(phiRad)) * latPerM,
-                            KRAKATAU_LON + (resA.ideal.range * Math.sin(phiRad)) * lonPerM
+                            KRAKATAU_LAT + (resA.idealRange * Math.cos(phiRad)) * latPerM,
+                            KRAKATAU_LON + (resA.idealRange * Math.sin(phiRad)) * lonPerM
                         ]
-                    ];
-                    mapLayers.idealA = L.polyline(idealCoords, { color: '#06b6d4', weight: 2, dashArray: '6, 6', opacity: 0.8 }).addTo(map);
+                    ].filter(pt => isFinite(pt[0]) && isFinite(pt[1]));
 
-                    // Impact Marker
-                    mapLayers.impactMarkerA = L.circleMarker([resA.endLat, resA.endLon], {
-                        radius: 7,
-                        fillColor: '#10b981',
-                        color: '#ffffff',
-                        weight: 2,
-                        fillOpacity: 1
-                    }).addTo(map).bindPopup(`<b>Titik Dampak Bom (A)</b><br>Jarak: ${(resA.horizDist/1000).toFixed(2)} km`);
-                }
-
-                if (showAsh) {
-                    // Ash Footprint Ellipse
-                    const ash = resA.ash;
-                    const ashCenterLat = (KRAKATAU_LAT + ash.ashLat) / 2;
-                    const ashCenterLon = (KRAKATAU_LON + ash.ashLon) / 2;
-
-                    mapLayers.ashPolyA = L.circle([ashCenterLat, ashCenterLon], {
-                        radius: Math.max(ash.driftDist / 2, 500),
-                        color: '#9333ea',
-                        fillColor: '#a855f7',
-                        fillOpacity: 0.35,
-                        weight: 2,
-                        dashArray: '4, 4'
-                    }).addTo(map).bindPopup(`<b>Zona Sebaran Abu Vulkanik (Isopach)</b><br>Ukuran Bulir: ${simParams.A.ashSize} mm<br>Jarak Drift: ${(ash.driftDist/1000).toFixed(1)} km`);
-                }
-            }
-
-            // Simulation B Render
-            if (isCompareMode && simResults.B) {
-                const resB = simResults.B;
-                const coordsB = resB.points.map(pt => [
-                    KRAKATAU_LAT + pt.y * latPerM,
-                    KRAKATAU_LON + pt.x * lonPerM
-                ]);
-
-                mapLayers.trajB = L.polyline(coordsB, { color: '#d97706', weight: 4, opacity: 0.95 }).addTo(map);
-
-                mapLayers.impactMarkerB = L.circleMarker([resB.endLat, resB.endLon], {
-                    radius: 7,
-                    fillColor: '#f59e0b',
-                    color: '#ffffff',
-                    weight: 2,
-                    fillOpacity: 1
-                }).addTo(map).bindPopup(`<b>Titik Dampak Bom (B)</b><br>Jarak: ${(resB.horizDist/1000).toFixed(2)} km`);
-            }
-        }
-
-        // Initialize Chart.js
-        function initCharts() {
-            const ctxAlt = document.getElementById('chartAltitudeDistance')?.getContext('2d');
-            const ctxVel = document.getElementById('chartVelocityTime')?.getContext('2d');
-
-            const textColor = isDarkMode ? '#94a3b8' : '#475569';
-            const gridColor = isDarkMode ? '#1e293b' : '#e2e8f0';
-
-            if (ctxAlt) {
-                chartAlt = new Chart(ctxAlt, {
-                    type: 'line',
-                    data: {
-                        labels: [],
-                        datasets: [{
-                            label: 'Tinggi z (m)',
-                            data: [],
-                            borderColor: '#ea580c',
-                            backgroundColor: 'rgba(234, 88, 12, 0.15)',
-                            fill: true,
-                            tension: 0.2,
-                            pointRadius: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: { title: { display: true, text: 'Jarak Horizontal R (m)', color: textColor }, grid: { color: gridColor }, ticks: { color: textColor } },
-                            y: { title: { display: true, text: 'Ketinggian z (m)', color: textColor }, grid: { color: gridColor }, ticks: { color: textColor } }
-                        },
-                        plugins: { legend: { labels: { color: isDarkMode ? '#f3f4f6' : '#1e293b' } } }
+                    if (idealCoords.length === 2) {
+                        mapLayers.idealA = L.polyline(idealCoords, { color: '#06b6d4', weight: 2, dashArray: '6, 6', opacity: 0.8 }).addTo(map);
                     }
-                });
-            }
 
-            if (ctxVel) {
-                chartVel = new Chart(ctxVel, {
-                    type: 'line',
-                    data: {
-                        labels: [],
-                        datasets: [
-                            { label: 'Kecepatan Total v (m/s)', data: [], borderColor: '#0284c7', pointRadius: 0 },
-                            { label: 'Vertikal vz (m/s)', data: [], borderColor: '#9333ea', pointRadius: 0 }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: { title: { display: true, text: 'Waktu t (detik)', color: textColor }, grid: { color: gridColor }, ticks: { color: textColor } },
-                            y: { title: { display: true, text: 'Kecepatan (m/s)', color: textColor }, grid: { color: gridColor }, ticks: { color: textColor } }
-                        },
-                        plugins: { legend: { labels: { color: isDarkMode ? '#f3f4f6' : '#1e293b' } } }
-                    }
-                });
-            }
-        }
+                    if (isAnimated) {
+                        mapLayers.trajA = L.polyline([allCoords[0]], { color: '#2563eb', weight: 4, opacity: 0.9 }).addTo(map);
 
-        // Update Chart & Table Data
-        function updateCharts() {
-            if (!simResults.A) return;
-            const resA = simResults.A;
+                        const bombIcon = L.divIcon({
+                            className: 'flying-bomb-container',
+                            html: '',
+                            iconSize: [16, 16],
+                            iconAnchor: [8, 8]
+                        });
+                        mapLayers.animMarkerA = L.marker(allCoords[0], { icon: bombIcon }).addTo(map);
 
-            if (chartAlt) {
-                chartAlt.data.labels = resA.points.map(p => p.rHoriz.toFixed(0));
-                chartAlt.data.datasets[0].data = resA.points.map(p => p.z.toFixed(1));
-                chartAlt.update();
-            }
+                        let step = 0;
+                        const totalSteps = allCoords.length;
+                        const speedStep = Math.max(1, Math.floor(totalSteps / 40));
 
-            if (chartVel) {
-                chartVel.data.labels = resA.points.map(p => p.t.toFixed(1));
-                chartVel.data.datasets[0].data = resA.points.map(p => p.speed.toFixed(1));
-                chartVel.data.datasets[1].data = resA.points.map(p => p.vz.toFixed(1));
-                chartVel.update();
-            }
+                        function animateFlight() {
+                            step += speedStep;
+                            if (step >= totalSteps) step = totalSteps - 1;
 
-            // Metrics Table Update
-            const tbody = document.getElementById('tableMetricsBody');
-            if (tbody) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td class="p-2.5 font-semibold">Jarak Maksimum (R)</td>
-                        <td class="p-2.5 text-orange-600 dark:text-orange-400 font-mono font-bold">${(resA.horizDist/1000).toFixed(2)} km</td>
-                        <td class="p-2.5 text-purple-600 dark:text-purple-400 font-mono font-bold">${(resA.ash.driftDist/1000).toFixed(2)} km</td>
-                        <td class="p-2.5 text-cyan-600 dark:text-cyan-400 font-mono font-bold">${(resA.ideal.range/1000).toFixed(2)} km</td>
-                    </tr>
-                    <tr>
-                        <td class="p-2.5 font-semibold">Ketinggian Puncak (Z<sub>max</sub>)</td>
-                        <td class="p-2.5 text-orange-600 dark:text-orange-400 font-mono font-bold">${resA.maxZ.toFixed(0)} m</td>
-                        <td class="p-2.5 text-purple-600 dark:text-purple-400 font-mono font-bold">${resA.ash.plumeHeight.toFixed(0)} m</td>
-                        <td class="p-2.5 text-cyan-600 dark:text-cyan-400 font-mono font-bold">${resA.ideal.maxZ.toFixed(0)} m</td>
-                    </tr>
-                    <tr>
-                        <td class="p-2.5 font-semibold">Waktu Terbang / Mengendap</td>
-                        <td class="p-2.5 text-orange-600 dark:text-orange-400 font-mono font-bold">${resA.flightTime.toFixed(1)} s</td>
-                        <td class="p-2.5 text-purple-600 dark:text-purple-400 font-mono font-bold">${(resA.ash.settleTime/60).toFixed(1)} menit</td>
-                        <td class="p-2.5 text-cyan-600 dark:text-cyan-400 font-mono font-bold">${resA.ideal.flightTime.toFixed(1)} s</td>
-                    </tr>
-                `;
-            }
-        }
+                            const currentCoords = allCoords.slice(0, step + 1);
+                            if (mapLayers.trajA) mapLayers.trajA.setLatLngs(currentCoords);
+                            if (mapLayers.animMarkerA && allCoords[step]) mapLayers.animMarkerA.setLatLng(allCoords[step]);
 
-        // Render 3D Canvas
-        function render3DCanvas() {
-            const canvas = document.getElementById('canvas3D');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-
-            canvas.width = canvas.clientWidth;
-            canvas.height = canvas.clientHeight;
-
-            const width = canvas.width;
-            const height = canvas.height;
-
-            ctx.clearRect(0, 0, width, height);
-
-            if (!simResults.A) return;
-
-            const resA = simResults.A;
-            const pts = resA.points;
-
-            const cx = width / 2;
-            const cy = height * 0.75;
-            const scale = Math.min(width, height) / Math.max(resA.horizDist || 1, resA.maxZ || 1) * 0.35;
-
-            const project = (x, y, z) => {
-                const rotX = x * Math.cos(angleX) - y * Math.sin(angleX);
-                const rotY = x * Math.sin(angleX) + y * Math.cos(angleX);
-                const isoX = cx + (rotX - rotY) * Math.cos(angleY) * scale;
-                const isoY = cy - z * scale * 1.2 + (rotX + rotY) * Math.sin(angleY) * scale * 0.5;
-                return { x: isoX, y: isoY };
-            };
-
-            // Ground Axes Grid - Color adapted to Light/Dark Mode
-            ctx.strokeStyle = isDarkMode ? '#1e293b' : '#cbd5e1';
-            ctx.lineWidth = 1;
-            for (let i = -3; i <= 3; i++) {
-                const p1 = project(i * 1000, -3000, 0);
-                const p2 = project(i * 1000, 3000, 0);
-                ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
-            }
-
-            // Trajectory Curve
-            ctx.strokeStyle = '#ea580c';
-            ctx.lineWidth = 3;
-            ctx.beginPath();
-            pts.forEach((p, idx) => {
-                const proj = project(p.x, p.y, p.z);
-                if (idx === 0) ctx.moveTo(proj.x, proj.y);
-                else ctx.lineTo(proj.x, proj.y);
-            });
-            ctx.stroke();
-
-            // Plume Height Axis
-            const topProj = project(0, 0, resA.ash.plumeHeight);
-            const baseProj = project(0, 0, 0);
-            ctx.strokeStyle = '#9333ea';
-            ctx.lineWidth = 2;
-            ctx.setLineDash([4, 4]);
-            ctx.beginPath(); ctx.moveTo(baseProj.x, baseProj.y); ctx.lineTo(topProj.x, topProj.y); ctx.stroke();
-            ctx.setLineDash([]);
-        }
-
-        // Run Simulation Execution
-        function runSimulation() {
-            simResults.A = calculateTrajectory(simParams.A);
-            if (isCompareMode) {
-                simResults.B = calculateTrajectory(simParams.B);
-            }
-
-            const resA = simResults.A;
-
-            // Sync Header & Ribbon Stat Displays
-            const updateText = (id, text) => {
-                const el = document.getElementById(id);
-                if (el) el.innerText = text;
-            };
-
-            updateText('stat_range', `${(resA.horizDist/1000).toFixed(2)} km`);
-            updateText('stat_range_mob', `${(resA.horizDist/1000).toFixed(2)} km`);
-            updateText('stat_ideal_range', `Ideal: ${(resA.ideal.range/1000).toFixed(2)} km`);
-            updateText('stat_max_alt', `${resA.maxZ.toFixed(0)} m`);
-            updateText('stat_max_alt_mob', `${resA.maxZ.toFixed(0)} m`);
-            updateText('stat_plume_height', `Kolom Abu: ${resA.ash.plumeHeight.toFixed(0)} m`);
-            updateText('stat_time', `${resA.flightTime.toFixed(1)} s`);
-            updateText('stat_time_mob', `${resA.flightTime.toFixed(1)} s`);
-            updateText('stat_impact_speed', `Jatuh: ${resA.impactSpeed.toFixed(1)} m/s`);
-            updateText('stat_coords', `${resA.endLat.toFixed(3)}°, ${resA.endLon.toFixed(3)}°`);
-            updateText('stat_bearing', `Arah: ${resA.finalBearing.toFixed(0)}°`);
-            updateText('stat_ash_drift', `Drift: ${(resA.ash.driftDist/1000).toFixed(1)} km`);
-            updateText('stat_ash_mob', `${(resA.ash.driftDist/1000).toFixed(1)} km`);
-            updateText('stat_ash_settle_time', `Mengendap: ${(resA.ash.settleTime/60).toFixed(1)} m`);
-
-            renderMapTrajectories();
-            updateCharts();
-            render3DCanvas();
-
-            if (map) {
-                setTimeout(() => map.invalidateSize(), 100);
-            }
-        }
-
-        // Tab Navigation
-        function switchTab(tabKey) {
-            const tabMap = {
-                'map': { btn: 'tabBtnMap', content: 'tabContentMap' },
-                'charts': { btn: 'tabBtnCharts', content: 'tabContentCharts' },
-                '3d': { btn: 'tabBtn3D', content: 'tabContent3D' },
-                'ai': { btn: 'tabBtnAI', content: 'tabContentAI' },
-                'scenarios': { btn: 'tabBtnScenarios', content: 'tabContentScenarios' }
-            };
-
-            Object.keys(tabMap).forEach(key => {
-                const btnEl = document.getElementById(tabMap[key].btn);
-                const contentEl = document.getElementById(tabMap[key].content);
-
-                if (key === tabKey) {
-                    contentEl?.classList.remove('hidden');
-                    if (key === '3d') contentEl?.classList.add('flex');
-                    btnEl?.classList.add('border-blue-600', 'text-blue-600', 'dark:text-blue-400');
-                    btnEl?.classList.remove('border-transparent', 'text-slate-600', 'dark:text-slate-400');
-                } else {
-                    contentEl?.classList.add('hidden');
-                    if (key === '3d') contentEl?.classList.remove('flex');
-                    btnEl?.classList.remove('border-blue-600', 'text-blue-600', 'dark:text-blue-400');
-                    btnEl?.classList.add('border-transparent', 'text-slate-600', 'dark:text-slate-400');
-                }
-            });
-
-            if (tabKey === 'map' && map) {
-                setTimeout(() => map.invalidateSize(), 100);
-            } else if (tabKey === '3d') {
-                setTimeout(() => render3DCanvas(), 100);
-            }
-        }
-
-        function updateParam(key, val) {
-            simParams[activeSimTarget][key] = val;
-
-            const valEl = document.getElementById('val_' + key);
-            if (valEl) {
-                if (key === 'ashSize') {
-                    valEl.innerText = parseFloat(val).toFixed(3);
-                } else {
-                    valEl.innerText = val;
-                }
-            }
-
-            if (key === 'materialType') {
-                // Apply physical parameter presets based on selected material
-                const target = activeSimTarget;
-                if (val === 'bomb') {
-                    simParams[target].m = 25.0;
-                    simParams[target].Cd = 0.65;
-                    simParams[target].A = 0.050;
-                } else if (val === 'fine_ash') {
-                    simParams[target].m = 0.1;
-                    simParams[target].Cd = 0.85;
-                    simParams[target].A = 0.005;
-                    simParams[target].ashSize = 0.001;
-                } else if (val === 'coarse_ash') {
-                    simParams[target].m = 0.5;
-                    simParams[target].Cd = 0.75;
-                    simParams[target].A = 0.010;
-                    simParams[target].ashSize = 2.000;
-                } else if (val === 'combined') {
-                    simParams[target].m = 10.0;
-                    simParams[target].Cd = 0.50;
-                    simParams[target].A = 0.020;
-                    simParams[target].ashSize = 0.250;
-                }
-
-                // Synchronize all UI slider inputs with preset values
-                syncSliderUI('m', simParams[target].m);
-                syncSliderUI('Cd', simParams[target].Cd);
-                syncSliderUI('A', simParams[target].A);
-                syncSliderUI('ashSize', simParams[target].ashSize);
-            } else if (key === 'phi') {
-                const dirEl = document.getElementById('txt_phi_dir');
-                if (dirEl) dirEl.innerText = getCompassBearing(parseFloat(val));
-            } else if (key === 'phiw') {
-                const dirEl = document.getElementById('txt_phiw_dir');
-                if (dirEl) dirEl.innerText = getCompassBearing(parseFloat(val));
-            }
-
-            runSimulation();
-        }
-
-        function syncSliderUI(key, value) {
-            const inputEl = document.getElementById('param_' + key);
-            const valEl = document.getElementById('val_' + key);
-            if (inputEl) inputEl.value = value;
-            if (valEl) {
-                if (key === 'ashSize') {
-                    valEl.innerText = parseFloat(value).toFixed(3);
-                } else {
-                    valEl.innerText = value;
-                }
-            }
-        }
-
-        function toggleCompareMode() {
-            isCompareMode = !isCompareMode;
-            const container = document.getElementById('compareSelectorContainer');
-            const legendB = document.getElementById('legendSimB');
-            const btnText = document.getElementById('compareBtnText');
-
-            if (isCompareMode) {
-                container?.classList.remove('hidden');
-                legendB?.classList.remove('hidden');
-                if (btnText) btnText.innerText = 'Bandingkan: On';
-            } else {
-                container?.classList.add('hidden');
-                legendB?.classList.add('hidden');
-                if (btnText) btnText.innerText = 'Bandingkan: Off';
-            }
-            runSimulation();
-        }
-
-        function setActiveSimTarget(target) {
-            activeSimTarget = target;
-            const btnA = document.getElementById('selectSimABtn');
-            const btnB = document.getElementById('selectSimBBtn');
-
-            if (target === 'A') {
-                btnA?.classList.replace('bg-slate-200', 'bg-blue-600');
-                btnA?.classList.replace('dark:bg-slate-700', 'bg-blue-600');
-                btnB?.classList.replace('bg-cyan-600', 'bg-slate-200');
-            } else {
-                btnB?.classList.replace('bg-slate-200', 'bg-cyan-600');
-                btnA?.classList.replace('bg-blue-600', 'bg-slate-200');
-            }
-        }
-
-        function applyPreset(preset) {
-            if (preset === 'speed') {
-                updateParam('v0', 280); updateParam('theta', 45);
-            } else if (preset === 'angle') {
-                updateParam('v0', 180); updateParam('theta', 75);
-            } else if (preset === 'mass') {
-                updateParam('m', 50.0); updateParam('Cd', 0.8);
-            } else if (preset === 'wind') {
-                updateParam('vw', 30); updateParam('phiw', 90);
-            }
-            switchTab('map');
-        }
-
-        function resetToDefaults() {
-            simParams.A = { materialType: 'combined', v0: 180, theta: 45, phi: 60, m: 10.0, Cd: 0.50, A: 0.020, ashSize: 0.25, vw: 12, phiw: 240, rho: 1.225, g: 9.81, z0: 155 };
-            runSimulation();
-        }
-
-        function openModal(id) { document.getElementById(id)?.classList.remove('hidden'); }
-        function closeModal(id) { document.getElementById(id)?.classList.add('hidden'); }
-
-        // Compass direction helper function
-        function getCompassBearing(deg) {
-            const directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-            const normalized = ((deg % 360) + 360) % 360;
-            const index = Math.round(normalized / 45) % 8;
-            return directions[index];
-        }
-
-        // Mobile drawer control toggle function
-        function toggleMobileControls() {
-            const sidebar = document.getElementById('controlSidebar');
-            if (!sidebar) return;
-            sidebar.classList.toggle('hidden');
-            isMobileControlsOpen = !sidebar.classList.contains('hidden');
-        }
-
-        // Gemini API Exponential Backoff Fetch Helper
-        async function fetchGeminiWithBackoff(url, options, maxRetries = 3) {
-            let delay = 1000;
-            for (let i = 0; i < maxRetries; i++) {
-                try {
-                    const response = await fetch(url, options);
-                    if (response.ok) return response;
-                    if (response.status === 429 || response.status >= 500) {
-                        await new Promise(r => setTimeout(r, delay));
-                        delay *= 2;
-                        continue;
-                    }
-                    return response;
-                } catch (err) {
-                    if (i === maxRetries - 1) throw err;
-                    await new Promise(r => setTimeout(r, delay));
-                    delay *= 2;
-                }
-            }
-            throw new Error('Gagal menghubungi API Gemini');
-        }
-
-        // Helper to convert PCM16 audio bytes into a valid WAV file Blob for browser playback
-        function base64ToArrayBuffer(base64) {
-            const binaryString = window.atob(base64);
-            const len = binaryString.length;
-            const bytes = new Uint8Array(len);
-            for (let i = 0; i < len; i++) {
-                bytes[i] = binaryString.charCodeAt(i);
-            }
-            return bytes.buffer;
-        }
-
-        function pcmToWav(pcm16, sampleRate) {
-            const buffer = new ArrayBuffer(44 + pcm16.length * 2);
-            const view = new DataView(buffer);
-
-            function writeString(view, offset, string) {
-                for (let i = 0; i < string.length; i++) {
-                    view.setUint8(offset + i, string.charCodeAt(i));
-                }
-            }
-
-            writeString(view, 0, 'RIFF');
-            view.setUint32(4, 36 + pcm16.length * 2, true);
-            writeString(view, 8, 'WAVE');
-            writeString(view, 12, 'fmt ');
-            view.setUint32(16, 16, true);
-            view.setUint16(20, 1, true); // PCM format
-            view.setUint16(22, 1, true); // Mono channel
-            view.setUint32(24, sampleRate, true);
-            view.setUint32(28, sampleRate * 2, true);
-            view.setUint16(32, 2, true);
-            view.setUint16(34, 16, true);
-            writeString(view, 36, 'data');
-            view.setUint32(40, pcm16.length * 2, true);
-
-            let offset = 44;
-            for (let i = 0; i < pcm16.length; i++, offset += 2) {
-                view.setInt16(offset, pcm16[i], true);
-            }
-
-            return new Blob([view], { type: 'audio/wav' });
-        }
-
-        // 1. Live Gemini AI Analysis Report (gemini-3-flash-preview)
-        async function generateAIAnalysis() {
-            const loading = document.getElementById('aiAnalysisLoading');
-            const content = document.getElementById('aiAnalysisContent');
-            if (loading) loading.classList.remove('hidden');
-
-            const p = simParams.A;
-            const r = simResults.A;
-
-            const systemPrompt = "Anda adalah Ahli Volkanologi dan Fisika Terkemuka. Buat laporan analisis ilmiah yang mendalam, terstruktur, dan edukatif dalam bahasa Indonesia berdasarkan data parameter simulasi letusan Anak Krakatau yang diberikan.";
-            const userPrompt = `Data Parameter Erupsi Anak Krakatau saat ini:
-- Kecepatan Awal (v0): ${p.v0} m/s
-- Sudut Elevasi (theta): ${p.theta}°
-- Azimuth Peluncuran (phi): ${p.phi}° (${getCompassBearing(p.phi)})
-- Massa Bom Vulkanik: ${p.m} kg, Luas Penampang: ${p.A} m², Koefisien Drag: ${p.Cd}
-- Kecepatan Angin: ${p.vw} m/s, Arah Angin: ${p.phiw}° (${getCompassBearing(p.phiw)})
-- Ukuran Bulir Abu Vulkanik: ${p.ashSize} mm
-
-Hasil Perhitungan Fisika Simulasi:
-- Jarak Horizontal Aktual (Drag+Angin): ${(r.horizDist/1000).toFixed(2)} km
-- Jarak Ideal Vakum Tanpa Drag: ${(r.ideal.range/1000).toFixed(2)} km
-- Penurunan Jarak Akibat Drag: ${(((r.ideal.range - r.horizDist)/r.ideal.range)*100).toFixed(1)}%
-- Ketinggian Puncak Trajektori: ${r.maxZ.toFixed(0)} m
-- Tinggi Kolom Abu Erupsi: ${r.ash.plumeHeight.toFixed(0)} m
-- Jarak Drift Abu Vulkanik: ${(r.ash.driftDist/1000).toFixed(1)} km
-- Waktu Mengendap Abu: ${(r.ash.settleTime/60).toFixed(1)} menit
-- Koordinat Titik Jatuh Dampak: ${r.endLat.toFixed(3)}°, ${r.endLon.toFixed(3)}°
-
-Format Laporan:
-1. Ringkasan Eksekutif & Evaluasi Risiko Bahaya
-2. Analisis Kinematika & Pengaruh Gaya Drag Aerodinamis (Hukum II Newton)
-3. Pemodelan Sebaran Abu Vulkanik (Hukum Stokes & Vektor Angin Selat Sunda)
-4. Rekomendasi Mitigasi Kawasan Pesisir (Banten / Lampung)`;
-
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-
-            try {
-                const response = await fetchGeminiWithBackoff(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: userPrompt }] }],
-                        systemInstruction: { parts: [{ text: systemPrompt }] }
-                    })
-                });
-
-                const data = await response.json();
-                const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-                if (responseText && content && window.marked) {
-                    content.innerHTML = marked.parse(responseText);
-                } else if (content) {
-                    content.innerText = responseText || "Gagal memperoleh respons analisis dari AI Gemini.";
-                }
-            } catch (err) {
-                console.error("AI Generation error:", err);
-                if (content) {
-                    content.innerHTML = `<p class="text-red-500 font-bold">Terjadi kesalahan saat menghubungkan ke AI Gemini. Mempergunakan cadangan lokal...</p>`;
-                }
-            } finally {
-                if (loading) loading.classList.add('hidden');
-            }
-        }
-
-        // 2. Gemini Audio Speech Broadcast (gemini-2.5-flash-preview-tts)
-        async function generateAIAudioBriefing() {
-            const btn = document.getElementById('btnGenerateTTS');
-            const playerContainer = document.getElementById('aiAudioPlayerContainer');
-            const audioElement = document.getElementById('aiAudioElement');
-
-            if (btn) btn.disabled = true;
-
-            const r = simResults.A;
-            const p = simParams.A;
-            const scriptText = `Sampaikan narasi laporan singkat dalam bahasa Indonesia dengan nada tegas dan informatif: Perhatian. Laporan evaluasi fisik letusan Anak Krakatau. Kecepatan peluncuran proyektil ${p.v0} meter per detik mencapai jangkauan ${(r.horizDist/1000).toFixed(2)} kilometer. Gaya hambat udara mengurangi jangkauan proyektil sebesar ${(((r.ideal.range - r.horizDist)/r.ideal.range)*100).toFixed(0)} persen. Kolom abu erupsi mencapai ketinggian ${r.ash.plumeHeight.toFixed(0)} meter dan terbawa angin sejauh ${(r.ash.driftDist/1000).toFixed(1)} kilometer menuju azimuth ${p.phiw} derajat. Harap tingkatkan kewaspadaan navigasi di kawasan Selat Sunda.`;
-
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
-
-            try {
-                const response = await fetchGeminiWithBackoff(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: scriptText }] }],
-                        generationConfig: {
-                            responseModalities: ["AUDIO"],
-                            speechConfig: {
-                                voiceConfig: {
-                                    prebuiltVoiceConfig: { voiceName: "Kore" }
-                                }
+                            if (step < totalSteps - 1) {
+                                animFrameId = requestAnimationFrame(animateFlight);
+                            } else if (isFinite(resA.endLat) && isFinite(resA.endLon)) {
+                                mapLayers.impactMarkerA = L.circleMarker([resA.endLat, resA.endLon], {
+                                    radius: 7,
+                                    fillColor: '#10b981',
+                                    color: '#ffffff',
+                                    weight: 2,
+                                    fillOpacity: 1
+                                }).addTo(map).bindPopup(`<b>Titik Jatuh Bom</b><br>Jarak: ${(resA.horizDist/1000).toFixed(2)} km`);
                             }
                         }
-                    })
-                });
-
-                const data = await response.json();
-                const part = data?.candidates?.[0]?.content?.parts?.[0];
-                const audioData = part?.inlineData?.data;
-                const mimeType = part?.inlineData?.mimeType || "";
-
-                if (audioData) {
-                    const sampleRateMatch = mimeType.match(/rate=(\d+)/);
-                    const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 24000;
-                    const pcmBuffer = base64ToArrayBuffer(audioData);
-                    const pcm16 = new Int16Array(pcmBuffer);
-                    const wavBlob = pcmToWav(pcm16, sampleRate);
-                    const audioUrl = URL.createObjectURL(wavBlob);
-
-                    if (audioElement) {
-                        audioElement.src = audioUrl;
-                        playerContainer?.classList.remove('hidden');
-                        audioElement.play().catch(e => console.warn('Autoplay blocked:', e));
-                    }
-                }
-            } catch (err) {
-                console.error("TTS Generation error:", err);
-                alert("Gagal menggenerasi Audio Briefing TTS.");
-            } finally {
-                if (btn) btn.disabled = false;
-            }
-        }
-
-        // 3. Gemini Eruption Image Generator (gemini-3.1-flash-image)
-        async function generateAIEruptionImage() {
-            const container = document.getElementById('aiImageContainer');
-            const loading = document.getElementById('aiImageLoading');
-            const img = document.getElementById('aiEruptionImg');
-
-            container?.classList.remove('hidden');
-            loading?.classList.remove('hidden');
-            img?.classList.add('hidden');
-
-            const p = simParams.A;
-            const r = simResults.A;
-            const prompt = `A realistic high quality wide cinematic 16:9 photo of volcanic eruption of Anak Krakatau island in Sunda Strait Indonesia. Dramatic volcanic eruption plume rising up to ${r.ash.plumeHeight.toFixed(0)} meters high into atmospheric cloud layer, glowing red volcanic bombs flying outwards in arc trajectory with smoke trails at ${p.v0} m/s launch velocity, strong wind drifting the massive ash column, sunset sky over sea water with neighboring volcanic islands in background. Realism, dramatic lighting, detailed ash plume texture.`;
-
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-image:generateContent?key=${apiKey}`;
-
-            try {
-                const response = await fetchGeminiWithBackoff(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ role: 'user', parts: [{ text: prompt }] }],
-                        generationConfig: {
-                            responseModalities: ['IMAGE'],
-                            imageConfig: { aspectRatio: "16:9" }
+                        animFrameId = requestAnimationFrame(animateFlight);
+                    } else {
+                        mapLayers.trajA = L.polyline(allCoords, { color: '#2563eb', weight: 4, opacity: 0.9 }).addTo(map);
+                        if (isFinite(resA.endLat) && isFinite(resA.endLon)) {
+                            mapLayers.impactMarkerA = L.circleMarker([resA.endLat, resA.endLon], {
+                                radius: 7,
+                                fillColor: '#10b981',
+                                color: '#ffffff',
+                                weight: 2,
+                                fillOpacity: 1
+                            }).addTo(map).bindPopup(`<b>Titik Jatuh Bom</b><br>Jarak: ${(resA.horizDist/1000).toFixed(2)} km`);
                         }
-                    })
-                });
-
-                const data = await response.json();
-                const part = data?.candidates?.[0]?.content?.parts?.find(pt => pt.inlineData);
-
-                if (part && part.inlineData?.data) {
-                    const imgUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
-                    if (img) {
-                        img.src = imgUrl;
-                        img.classList.remove('hidden');
                     }
                 }
-            } catch (err) {
-                console.error("Image Generation error:", err);
-            } finally {
-                loading?.classList.add('hidden');
-            }
-        }
-
-        // 4. Interactive AI Volcanology Q&A Chat Assistant (gemini-3-flash-preview)
-        let aiChatHistory = [];
-
-        async function handleChatSubmit(e) {
-            if (e) e.preventDefault();
-            const inputEl = document.getElementById('chatInputText');
-            if (!inputEl) return;
-            const userMsg = inputEl.value.trim();
-            if (!userMsg) return;
-
-            inputEl.value = '';
-            appendChatMessage('user', userMsg);
-            await processAIChat(userMsg);
-        }
-
-        function sendQuickChatPrompt(msg) {
-            appendChatMessage('user', msg);
-            processAIChat(msg);
-        }
-
-        function appendChatMessage(sender, text) {
-            const chatLog = document.getElementById('chatMessageLog');
-            if (!chatLog) return;
-
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'flex gap-2.5 items-start';
-
-            if (sender === 'user') {
-                msgDiv.innerHTML = `
-                    <div class="ml-auto bg-indigo-600 text-white p-3 rounded-2xl max-w-[85%] shadow-sm text-xs font-medium">
-                        ${text}
-                    </div>
-                    <div class="w-6 h-6 rounded-full bg-slate-400 text-white flex items-center justify-center text-[10px] font-bold shrink-0">Anda</div>
-                `;
-            } else {
-                msgDiv.innerHTML = `
-                    <div class="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold shrink-0">AI</div>
-                    <div class="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 shadow-sm max-w-[85%] prose prose-slate dark:prose-invert text-xs">
-                        ${window.marked ? marked.parse(text) : text}
-                    </div>
-                `;
             }
 
-            chatLog.appendChild(msgDiv);
-            chatLog.scrollTop = chatLog.scrollHeight;
-        }
+            if (isAnimated) {
+                const validBounds = [[KRAKATAU_LAT, KRAKATAU_LON]];
+                if (isFinite(resA.endLat) && isFinite(resA.endLon) && 
+                   (Math.abs(resA.endLat - KRAKATAU_LAT) > 0.0001 || Math.abs(resA.endLon - KRAKATAU_LON) > 0.0001)) {
+                    validBounds.push([resA.endLat, resA.endLon]);
+                }
+                if (resA.ash && isFinite(resA.ash.ashLat) && isFinite(resA.ash.ashLon) && 
+                   (Math.abs(resA.ash.ashLat - KRAKATAU_LAT) > 0.0001 || Math.abs(resA.ash.ashLon - KRAKATAU_LON) > 0.0001)) {
+                    validBounds.push([resA.ash.ashLat, resA.ash.ashLon]);
+                }
 
-        async function processAIChat(userMsg) {
-            const p = simParams.A;
-            const r = simResults.A;
-
-            const systemPrompt = `Anda adalah "Dr. Krakatau AI", asisten pakar volkanologi dan fisika interaktif untuk Krakatau Physics Simulator. 
-Data parameter simulasi saat ini: v0 = ${p.v0} m/s, θ = ${p.theta}°, m = ${p.m} kg, Cd = ${p.Cd}, Kecepatan Angin = ${p.vw} m/s, Arah Angin = ${p.phiw}°, Jarak Proyektil = ${(r.horizDist/1000).toFixed(2)} km, Drift Abu = ${(r.ash.driftDist/1000).toFixed(1)} km.
-Jawablah pertanyaan pengguna secara ramah, ringkas, ilmiah, dan mudah dipahami oleh siswa SMA / mahasiswa fisika.`;
-
-            aiChatHistory.push({ role: 'user', parts: [{ text: userMsg }] });
-
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-
-            try {
-                const response = await fetchGeminiWithBackoff(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: aiChatHistory,
-                        systemInstruction: { parts: [{ text: systemPrompt }] }
-                    })
-                });
-
-                const data = await response.json();
-                const aiReply = data.candidates?.[0]?.content?.parts?.[0]?.text || "Maaf, saya tidak dapat memproses jawaban saat ini.";
-
-                aiChatHistory.push({ role: 'model', parts: [{ text: aiReply }] });
-                appendChatMessage('ai', aiReply);
-            } catch (err) {
-                console.error("Chat AI Error:", err);
-                appendChatMessage('ai', 'Terjadi masalah jaringan saat menghubungi AI Gemini. Silakan coba lagi.');
-            }
-        }
-
-        window.onload = function () {
-            try { if (window.lucide) lucide.createIcons(); } catch (e) { console.warn(e); }
-            try { initMap(); } catch (e) { console.error('Map init error:', e); }
-            try { initCharts(); } catch (e) { console.error('Charts init error:', e); }
-
-            // 3D Touch & Mouse Listeners
-            const canvas3D = document.getElementById('canvas3D');
-            if (canvas3D) {
-                canvas3D.addEventListener('mousedown', (e) => {
-                    isDragging3D = true; lastMouseX = e.clientX; lastMouseY = e.clientY;
-                });
-                window.addEventListener('mousemove', (e) => {
-                    if (!isDragging3D) return;
-                    angleX += (e.clientX - lastMouseX) * 0.008;
-                    angleY += (e.clientY - lastMouseY) * 0.008;
-                    lastMouseX = e.clientX; lastMouseY = e.clientY;
-                    render3DCanvas();
-                });
-                window.addEventListener('mouseup', () => { isDragging3D = false; });
-
-                canvas3D.addEventListener('touchstart', (e) => {
-                    if (e.touches && e.touches.length === 1) {
-                        isDragging3D = true; lastMouseX = e.touches[0].clientX; lastMouseY = e.touches[0].clientY;
+                if (validBounds.length > 1 && map.getSize().x > 0 && map.getSize().y > 0) {
+                    try {
+                        const bounds = L.latLngBounds(validBounds);
+                        if (bounds.isValid() && bounds.getSouthWest().distanceTo(bounds.getNorthEast()) > 50) {
+                            map.flyToBounds(bounds.pad(0.3), { duration: 1 });
+                        }
+                    } catch (e) {
+                        map.setView([KRAKATAU_LAT, KRAKATAU_LON], 10);
                     }
-                }, { passive: true });
-                window.addEventListener('touchmove', (e) => {
-                    if (!isDragging3D || !e.touches || e.touches.length !== 1) return;
-                    if (e.cancelable) e.preventDefault();
-                    angleX += (e.touches[0].clientX - lastMouseX) * 0.008;
-                    angleY += (e.touches[0].clientY - lastMouseY) * 0.008;
-                    lastMouseX = e.touches[0].clientX; lastMouseY = e.touches[0].clientY;
-                    render3DCanvas();
-                }, { passive: false });
-                window.addEventListener('touchend', () => { isDragging3D = false; });
+                }
+            }
+        }
+
+        function renderAshPlume(resA, isAnimated = false) {
+            if (!resA || !resA.ash) return;
+            const ash = resA.ash;
+            const targetLat = isFinite(ash.ashLat) ? ash.ashLat : KRAKATAU_LAT;
+            const targetLon = isFinite(ash.ashLon) ? ash.ashLon : KRAKATAU_LON;
+            const driftDist = isFinite(ash.driftDist) ? Math.max(0, ash.driftDist) : 0;
+
+            const latPerM = 1 / 111139;
+            const lonPerM = 1 / (111139 * Math.cos(KRAKATAU_LAT * Math.PI / 180));
+
+            const deltaX = (targetLon - KRAKATAU_LON) / lonPerM;
+            const deltaY = (targetLat - KRAKATAU_LAT) / latPerM;
+            const distM = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+            const ashPopup = `<b>Awan Sebaran Abu Vulkanik (Pluma/Isopach)</b><br>Tinggi Kolom: ${(ash.plumeHeight || 0).toFixed(0)} m<br>Jarak Drift Utama: ${(driftDist/1000).toFixed(1)} km<br>Waktu Mengendap: ${((ash.settleTime || 0)/60).toFixed(0)} menit`;
+
+            const isDark = document.documentElement.classList.contains('dark');
+            const colorOuter = isDark ? '#e2e8f0' : '#64748b';
+            const fillOuter = isDark ? '#ffffff' : '#94a3b8';
+            const colorMain = isDark ? '#f8fafc' : '#475569';
+            const fillMain = isDark ? '#f1f5f9' : '#64748b';
+            const colorCore = isDark ? '#ffffff' : '#1e293b';
+            const fillCore = isDark ? '#ffffff' : '#334155';
+
+            function generatePlumePolygon(progressFactor, radiusScale = 1.0) {
+                const curDeltaX = deltaX * progressFactor;
+                const curDeltaY = deltaY * progressFactor;
+                const curDist = distM * progressFactor;
+
+                const rStart = Math.max(500, (ash.plumeHeight || 1000) * 0.15) * radiusScale;
+                const rEnd = (rStart + Math.max(1200, curDist * 0.28)) * radiusScale;
+
+                if (curDist < 100) {
+                    const points = [];
+                    const steps = 24;
+                    for (let i = 0; i < steps; i++) {
+                        const ang = (i / steps) * Math.PI * 2;
+                        const px = rEnd * Math.cos(ang);
+                        const py = rEnd * Math.sin(ang);
+                        points.push([
+                            KRAKATAU_LAT + py * latPerM,
+                            KRAKATAU_LON + px * lonPerM
+                        ]);
+                    }
+                    return points;
+                }
+
+                const dirAngle = Math.atan2(curDeltaY, curDeltaX);
+                const polygonCoords = [];
+                const steps = 16;
+
+                for (let i = 0; i <= steps; i++) {
+                    const t = i / steps;
+                    const cx = curDeltaX * t;
+                    const cy = curDeltaY * t;
+                    const r = rStart + (rEnd - rStart) * Math.pow(t, 0.85);
+                    const px = cx + r * Math.cos(dirAngle + Math.PI / 2);
+                    const py = cy + r * Math.sin(dirAngle + Math.PI / 2);
+                    polygonCoords.push([
+                        KRAKATAU_LAT + py * latPerM,
+                        KRAKATAU_LON + px * lonPerM
+                    ]);
+                }
+
+                const capSteps = 16;
+                for (let i = 0; i <= capSteps; i++) {
+                    const ang = (dirAngle + Math.PI / 2) - (i / capSteps) * Math.PI;
+                    const px = curDeltaX + rEnd * Math.cos(ang);
+                    const py = curDeltaY + rEnd * Math.sin(ang);
+                    polygonCoords.push([
+                        KRAKATAU_LAT + py * latPerM,
+                        KRAKATAU_LON + px * lonPerM
+                    ]);
+                }
+
+                for (let i = steps; i >= 0; i--) {
+                    const t = i / steps;
+                    const cx = curDeltaX * t;
+                    const cy = curDeltaY * t;
+                    const r = rStart + (rEnd - rStart) * Math.pow(t, 0.85);
+                    const px = cx + r * Math.cos(dirAngle - Math.PI / 2);
+                    const py = cy + r * Math.sin(dirAngle - Math.PI / 2);
+                    polygonCoords.push([
+                        KRAKATAU_LAT + py * latPerM,
+                        KRAKATAU_LON + px * lonPerM
+                    ]);
+                }
+
+                // 4. Crater source cap
+                for (let i = 0; i <= capSteps; i++) {
+                    const ang = (dirAngle - Math.PI / 2) - (i / capSteps) * Math.PI;
+                    const px = rStart * Math.cos(ang);
+                    const py = rStart * Math.sin(ang);
+                    polygonCoords.push([
+                        KRAKATAU_LAT + py * latPerM,
+                        KRAKATAU_LON + px * lonPerM
+                    ]);
+                }
+
+                return polygonCoords;
+            }
+
+            if (isAnimated) {
+                const outerPoly = L.polygon(generatePlumePolygon(0.05, 1.25), {
+                    color: colorOuter,
+                    fillColor: fillOuter,
+                    fillOpacity: isDark ? 0.35 : 0.25,
+                    weight: 1,
+                    dashArray: '4, 4'
+                }).addTo(map);
+
+                const mainPoly = L.polygon(generatePlumePolygon(0.05, 1.0), {
+                    color: colorMain,
+                    fillColor: fillMain,
+                    fillOpacity: isDark ? 0.65 : 0.5,
+                    weight: 1.5
+                }).addTo(map);
+
+                const corePoly = L.polygon(generatePlumePolygon(0.05, 0.55), {
+                    color: colorCore,
+                    fillColor: fillCore,
+                    fillOpacity: isDark ? 0.85 : 0.7,
+                    weight: 1
+                }).addTo(map);
+
+                mainPoly.bindPopup(ashPopup);
+                outerPoly.bindPopup(ashPopup);
+                corePoly.bindPopup(ashPopup);
+
+                mapLayers.ashGroup = [outerPoly, mainPoly, corePoly];
+
+                const startTime = performance.now();
+                const duration = 2200;
+
+                function animateAshPlume(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    let progress = Math.min(elapsed / duration, 1.0);
+                    const ease = 1 - Math.pow(1 - progress, 3);
+
+                    if (outerPoly && mainPoly && corePoly) {
+                        outerPoly.setLatLngs(generatePlumePolygon(ease, 1.25));
+                        mainPoly.setLatLngs(generatePlumePolygon(ease, 1.0));
+                        corePoly.setLatLngs(generatePlumePolygon(ease, 0.55));
+                    }
+
+                    if (progress < 1.0) {
+                        mapLayers.ashAnimFrameId = requestAnimationFrame(animateAshPlume);
+                    }
+                }
+                mapLayers.ashAnimFrameId = requestAnimationFrame(animateAshPlume);
+            } else {
+                const outerPoly = L.polygon(generatePlumePolygon(1.0, 1.25), {
+                    color: colorOuter,
+                    fillColor: fillOuter,
+                    fillOpacity: isDark ? 0.35 : 0.25,
+                    weight: 1,
+                    dashArray: '4, 4'
+                }).addTo(map);
+
+                const mainPoly = L.polygon(generatePlumePolygon(1.0, 1.0), {
+                    color: colorMain,
+                    fillColor: fillMain,
+                    fillOpacity: isDark ? 0.65 : 0.5,
+                    weight: 1.5
+                }).addTo(map);
+
+                const corePoly = L.polygon(generatePlumePolygon(1.0, 0.55), {
+                    color: colorCore,
+                    fillColor: fillCore,
+                    fillOpacity: isDark ? 0.85 : 0.7,
+                    weight: 1
+                }).addTo(map);
+
+                mainPoly.bindPopup(ashPopup);
+                outerPoly.bindPopup(ashPopup);
+                corePoly.bindPopup(ashPopup);
+
+                mapLayers.ashGroup = [outerPoly, mainPoly, corePoly];
+            }
+        }
+
+        function initCharts() {
+            try {
+                if (typeof Chart === 'undefined') return;
+                const ctxTraj = document.getElementById('chartTrajectory')?.getContext('2d');
+                if (ctxTraj) {
+                    chartTrajectory = new Chart(ctxTraj, {
+                        type: 'line',
+                        data: {
+                            labels: [],
+                            datasets: [
+                                { label: 'Bom (Drag+Angin)', data: [], borderColor: '#2563eb', borderWidth: 2, pointRadius: 0 },
+                                { label: 'Abu Vulkanik Height', data: [], borderColor: '#64748b', borderWidth: 2, borderDash: [4, 4], pointRadius: 0 }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: { title: { display: true, text: 'Jarak Horizontal (m)' } },
+                                y: { title: { display: true, text: 'Ketinggian (m)' }, beginAtZero: true }
+                            }
+                        }
+                    });
+                }
+
+                const ctxVel = document.getElementById('chartVelocity')?.getContext('2d');
+                if (ctxVel) {
+                    chartVelocity = new Chart(ctxVel, {
+                        type: 'line',
+                        data: {
+                            labels: [],
+                            datasets: [
+                                { label: 'Kecepatan Total (m/s)', data: [], borderColor: '#10b981', borderWidth: 2, pointRadius: 0 }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: { title: { display: true, text: 'Waktu (s)' } },
+                                y: { title: { display: true, text: 'Kecepatan (m/s)' }, beginAtZero: true }
+                            }
+                        }
+                    });
+                }
+            } catch (err) {
+                console.error("Charts initialization error:", err);
+            }
+        }
+
+        function updateCharts(res) {
+            if (!chartTrajectory || !chartVelocity) return;
+
+            const trajLabels = [];
+            const trajData = [];
+            const velLabels = [];
+            const velData = [];
+
+            res.points.forEach((pt, idx) => {
+                if (idx % 5 === 0) {
+                    const horiz = Math.sqrt(pt.x * pt.x + pt.y * pt.y);
+                    trajLabels.push(horiz.toFixed(0));
+                    trajData.push(pt.z.toFixed(1));
+
+                    velLabels.push(pt.t.toFixed(1));
+                    const vTotal = Math.sqrt(pt.vx * pt.vx + pt.vy * pt.vy + pt.vz * pt.vz);
+                    velData.push(vTotal.toFixed(1));
+                }
+            });
+
+            chartTrajectory.data.labels = trajLabels;
+            chartTrajectory.data.datasets[0].data = trajData;
+            chartTrajectory.update();
+
+            chartVelocity.data.labels = velLabels;
+            chartVelocity.data.datasets[0].data = velData;
+            chartVelocity.update();
+        }
+
+        function render3D() {
+            const canvas = document.getElementById('canvas3d');
+            if (!canvas || !simResults) return;
+
+            const ctx = canvas.getContext('2d');
+            const w = canvas.offsetWidth;
+            const h = canvas.offsetHeight;
+            canvas.width = w;
+            canvas.height = h;
+
+            ctx.clearRect(0, 0, w, h);
+
+            const cx = w / 2;
+            const cy = h * 0.7;
+            const scale = Math.min(w, h) / 10000;
+
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 1;
+
+            for (let gridX = -4000; gridX <= 4000; gridX += 1000) {
+                for (let gridY = -4000; gridY <= 4000; gridY += 1000) {
+                    const px1 = cx + (gridX * Math.cos(rotX) - gridY * Math.sin(rotX)) * scale;
+                    const py1 = cy + (gridX * Math.sin(rotX) + gridY * Math.cos(rotX)) * scale * Math.sin(rotY);
+
+                    ctx.beginPath();
+                    ctx.arc(px1, py1, 1, 0, Math.PI * 2);
+                    ctx.fillStyle = '#475569';
+                    ctx.fill();
+                }
+            }
+
+            ctx.fillStyle = '#ef4444';
+            ctx.beginPath();
+            ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 3;
+
+            simResults.points.forEach((pt, i) => {
+                const px = cx + (pt.x * Math.cos(rotX) - pt.y * Math.sin(rotX)) * scale;
+                const py = cy + (pt.x * Math.sin(rotX) + pt.y * Math.cos(rotX)) * scale * Math.sin(rotY) - (pt.z * scale * 1.5);
+
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            });
+            ctx.stroke();
+        }
+
+        window.saveCurrentAsSimA = function() {
+            if (!simResults) return;
+            savedSimA = { params: { ...window.simParams }, results: { ...simResults } };
+            const status = document.getElementById('label_simA_status');
+            if (status) status.innerText = `Tersimpan (v0: ${savedSimA.params.v0} m/s, theta: ${savedSimA.params.theta}°)`;
+            updateCompareTable();
+        };
+
+        window.saveCurrentAsSimB = function() {
+            if (!simResults) return;
+            savedSimB = { params: { ...window.simParams }, results: { ...simResults } };
+            const status = document.getElementById('label_simB_status');
+            if (status) status.innerText = `Tersimpan (v0: ${savedSimB.params.v0} m/s, theta: ${savedSimB.params.theta}°)`;
+            updateCompareTable();
+        };
+
+        function updateCompareTable() {
+            const tbody = document.getElementById('compareTableBody');
+            if (!tbody) return;
+
+            if (!savedSimA && !savedSimB) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center italic text-slate-400">Klik tombol di atas untuk mengunci Simulasi A dan Simulasi B...</td></tr>`;
+                return;
+            }
+
+            const pA = savedSimA ? savedSimA.params : {};
+            const rA = savedSimA ? savedSimA.results : {};
+            const pB = savedSimB ? savedSimB.params : {};
+            const rB = savedSimB ? savedSimB.results : {};
+
+            const fmt = (val, suffix = '') => val !== undefined ? `${val} ${suffix}` : '-';
+            const diff = (valA, valB, suffix = '') => {
+                if (valA !== undefined && valB !== undefined) {
+                    const d = valB - valA;
+                    const sign = d > 0 ? '+' : '';
+                    return `${sign}${d.toFixed(2)} ${suffix}`;
+                }
+                return '-';
+            };
+
+            tbody.innerHTML = `
+                <tr>
+                    <td class="p-2.5 font-semibold">Kecepatan Awal (v₀)</td>
+                    <td class="p-2.5">${fmt(pA.v0, 'm/s')}</td>
+                    <td class="p-2.5">${fmt(pB.v0, 'm/s')}</td>
+                    <td class="p-2.5 font-mono text-slate-500">${diff(pA.v0, pB.v0, 'm/s')}</td>
+                </tr>
+                <tr>
+                    <td class="p-2.5 font-semibold">Sudut Elevasi (θ)</td>
+                    <td class="p-2.5">${fmt(pA.theta, '°')}</td>
+                    <td class="p-2.5">${fmt(pB.theta, '°')}</td>
+                    <td class="p-2.5 font-mono text-slate-500">${diff(pA.theta, pB.theta, '°')}</td>
+                </tr>
+                <tr>
+                    <td class="p-2.5 font-semibold">Jarak Horizontal Bom</td>
+                    <td class="p-2.5">${rA.horizDist ? (rA.horizDist/1000).toFixed(2) + ' km' : '-'}</td>
+                    <td class="p-2.5">${rB.horizDist ? (rB.horizDist/1000).toFixed(2) + ' km' : '-'}</td>
+                    <td class="p-2.5 font-mono text-slate-500">${diff(rA.horizDist ? rA.horizDist/1000 : undefined, rB.horizDist ? rB.horizDist/1000 : undefined, 'km')}</td>
+                </tr>
+                <tr>
+                    <td class="p-2.5 font-semibold">Drift Abu Vulkanik</td>
+                    <td class="p-2.5">${rA.ash ? (rA.ash.driftDist/1000).toFixed(1) + ' km' : '-'}</td>
+                    <td class="p-2.5">${rB.ash ? (rB.ash.driftDist/1000).toFixed(1) + ' km' : '-'}</td>
+                    <td class="p-2.5 font-mono text-slate-500">${diff(rA.ash ? rA.ash.driftDist/1000 : undefined, rB.ash ? rB.ash.driftDist/1000 : undefined, 'km')}</td>
+                </tr>
+            `;
+        }
+
+        window.renderDualComparisonOnMap = function() {
+            if (!savedSimA || !savedSimB || !map) return;
+            closeCompareModal();
+
+            const latPerM = 1 / 111139;
+            const lonPerM = 1 / (111139 * Math.cos(KRAKATAU_LAT * Math.PI / 180));
+
+            if (mapLayers.trajA) map.removeLayer(mapLayers.trajA);
+            if (mapLayers.trajB) map.removeLayer(mapLayers.trajB);
+
+            const coordsA = savedSimA.results.points.map(pt => [KRAKATAU_LAT + pt.y * latPerM, KRAKATAU_LON + pt.x * lonPerM]);
+            const coordsB = savedSimB.results.points.map(pt => [KRAKATAU_LAT + pt.y * latPerM, KRAKATAU_LON + pt.x * lonPerM]);
+
+            mapLayers.trajA = L.polyline(coordsA, { color: '#2563eb', weight: 4 }).addTo(map).bindPopup('<b>Simulasi A (Biru)</b>');
+            mapLayers.trajB = L.polyline(coordsB, { color: '#f59e0b', weight: 4 }).addTo(map).bindPopup('<b>Simulasi B (Oranye)</b>');
+
+            const bounds = L.latLngBounds([...coordsA, ...coordsB]);
+            if (bounds.isValid()) map.flyToBounds(bounds.pad(0.2));
+        };
+
+        window.clearComparison = function() {
+            savedSimA = null;
+            savedSimB = null;
+            const statusA = document.getElementById('label_simA_status');
+            const statusB = document.getElementById('label_simB_status');
+            if (statusA) statusA.innerText = 'Belum disimpan';
+            if (statusB) statusB.innerText = 'Belum disimpan';
+            updateCompareTable();
+            runSimulation();
+        };
+
+        window.addEventListener('load', () => {
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
+            }
+            initMap();
+            initCharts();
+
+            const canvas3d = document.getElementById('canvas3d');
+            if (canvas3d) {
+                canvas3d.addEventListener('mousedown', (e) => {
+                    isDragging3D = true;
+                    lastMouseX = e.clientX;
+                    lastMouseY = e.clientY;
+                });
+                window.addEventListener('mouseup', () => isDragging3D = false);
+                canvas3d.addEventListener('mousemove', (e) => {
+                    if (isDragging3D) {
+                        rotX += (e.clientX - lastMouseX) * 0.005;
+                        rotY += (e.clientY - lastMouseY) * 0.005;
+                        lastMouseX = e.clientX;
+                        lastMouseY = e.clientY;
+                        render3D();
+                    }
+                });
             }
 
             window.addEventListener('resize', () => {
                 if (map) map.invalidateSize();
-                render3DCanvas();
+                if (activeTab === '3d') render3D();
             });
-
-            runSimulation();
-        };
+        });
     </script>
 </body>
 </html>
